@@ -1,5 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:tyme/UI/Components/calendar.dart';
 import 'package:tyme/calendarDataSource.dart';
 import 'package:tyme/models/Task.dart';
 
@@ -10,35 +14,61 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late TasksDataSource _events;
-
-  final CalendarController _calendarController = CalendarController();
   @override
   void initState() {
     super.initState();
-    _events = TasksDataSource(source: _getTasks());
-    _calendarController.selectedDate = DateTime.now();
+    _events = TasksDataSource(source: _getTasks(DateTime.now()));
   }
 
+  CalendarFormat cf = CalendarFormat.month;
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Container(
-          height: 600,
-          child: SfCalendar(
-            view: CalendarView.month,
-            dataSource: _events,
-            monthViewSettings:
-                MonthViewSettings(showAgenda: true, numberOfWeeksInView: 6),
-            timeSlotViewSettings: TimeSlotViewSettings(
-                minimumAppointmentDuration: const Duration(minutes: 600000)),
-          ),
-        )
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          'Hello, Alaa!',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+      ),
+      //drawer: Drawer(child:,),
+      //
+      body: CalendarWidget(),
+      /* ListView(
+        children: [
+          Container(
+            height: 600,
+            child: SfCalendar(
+              onTap: (calendarTapDetails) {
+              
+                print(calendarTapDetails.resource?.displayName);
+
+             
+              },
+              view: CalendarView.month,
+              dataSource: _events,
+              monthViewSettings:
+                  MonthViewSettings(showAgenda: true, numberOfWeeksInView: 6),
+              timeSlotViewSettings: TimeSlotViewSettings(
+                  minimumAppointmentDuration: const Duration(minutes: 600000)),
+            ),
+          )
+        ],
+      ),*/
+      floatingActionButton: FloatingActionButton(
+        focusColor: Colors.black,
+        backgroundColor: Colors.black,
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        onPressed: () {},
+      ),
     );
   }
 
-  List<Task> _getTasks() {
+  List<Task> _getTasks(DateTime dt) {
     final List<Color> colorCollection = <Color>[];
     colorCollection.add(const Color(0xFF0F8644));
     colorCollection.add(const Color(0xFF8B1FA9));
@@ -55,7 +85,7 @@ class _HomePageState extends State<HomePage> {
     colorCollection.add(const Color(0xFF636363));
     colorCollection.add(const Color(0xFF0A8043));
     final List<Task> tasks = <Task>[];
-    for (int i = 0; i <= 10; i++) {
+    for (int i = 0; i <= 2; i++) {
       tasks.add(Task(
           title: 'Task ' + i.toString(),
           note: 'Note ' + i.toString(),
