@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tyme/UI/BottomSheets/add_task_bottomsheet.dart';
 import 'package:tyme/models/Task.dart';
 import 'package:tyme/utils/dateUtils.dart';
 
@@ -34,44 +35,65 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     });
   }
 
+  void _showBottomSheet(BuildContext context) async {
+    final Task? task = await showModalBottomSheet<Task>(
+        isScrollControlled: true,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+        ),
+        context: context,
+        builder: (context) {
+          return AddTaskBottomSheet(
+            selectedDay: _selectedDay,
+          );
+        });
+    setState(() {
+      tasks.add(task ?? tasks[0]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TableCalendar(
-          calendarFormat: calendarFormat,
-          dayHitTestBehavior: HitTestBehavior.deferToChild,
-          firstDay: _firstDay,
-          focusedDay: _focusedDay,
-          lastDay: _lastDay,
-          availableCalendarFormats: {
-            CalendarFormat.week: 'Week',
-            CalendarFormat.month: 'Month',
-          },
-          onDaySelected: _dateSelected,
-          eventLoader: _getTasksForDay,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onFormatChanged: (newFormat) =>
-              setState(() => calendarFormat = newFormat),
-        ),
-        ElevatedButton(
-            onPressed: () {
-              setState(() {
-                tasks.add(Task(
-                    color: Colors.red,
-                    dateStart: _selectedDay,
-                    dateEnd: _selectedDay,
-                    iconData: Icons.history_edu,
-                    isAllDay: false,
-                    note: 'dsd',
-                    title: 'dsd'));
-              });
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TableCalendar(
+            calendarFormat: calendarFormat,
+            dayHitTestBehavior: HitTestBehavior.deferToChild,
+            firstDay: _firstDay,
+            focusedDay: _focusedDay,
+            lastDay: _lastDay,
+            availableCalendarFormats: {
+              CalendarFormat.week: 'Week',
+              CalendarFormat.month: 'Month',
             },
-            child: Icon(Icons.add))
-      ],
+            onDaySelected: _dateSelected,
+            eventLoader: _getTasksForDay,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onFormatChanged: (newFormat) =>
+                setState(() => calendarFormat = newFormat),
+          ),
+          ElevatedButton(
+              onPressed: () => _showBottomSheet(context),
+              /*   setState(() {
+                  tasks.add(Task(
+                      color: Colors.red,
+                      dateStart: _selectedDay,
+                      dateEnd: _selectedDay,
+                      iconData: Icons.history_edu,
+                      isAllDay: false,
+                      note: 'dsd',
+                      title: 'dsd'));
+                });*/
+
+              child: Icon(Icons.add))
+        ],
+      ),
     );
   }
 

@@ -56,15 +56,6 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),*/
-      floatingActionButton: FloatingActionButton(
-        focusColor: Colors.black,
-        backgroundColor: Colors.black,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () {},
-      ),
     );
   }
 
