@@ -25,7 +25,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   List<Task> _getTasksForDay(DateTime day) {
     // Implementation example
-    return tasks.where((element) => element.dateStart.day == day.day).toList();
+    return tasks
+        .where((element) => element.dateStart.compareTo(day) == 0)
+        .toList();
   }
 
   void _dateSelected(DateTime selectedDate, DateTime focusedDate) {
@@ -56,44 +58,54 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TableCalendar(
-            calendarFormat: calendarFormat,
-            dayHitTestBehavior: HitTestBehavior.deferToChild,
-            firstDay: _firstDay,
-            focusedDay: _focusedDay,
-            lastDay: _lastDay,
-            availableCalendarFormats: {
-              CalendarFormat.week: 'Week',
-              CalendarFormat.month: 'Month',
-            },
-            onDaySelected: _dateSelected,
-            eventLoader: _getTasksForDay,
-            selectedDayPredicate: (day) {
-              return isSameDay(_selectedDay, day);
-            },
-            onFormatChanged: (newFormat) =>
-                setState(() => calendarFormat = newFormat),
-          ),
-          ElevatedButton(
-              onPressed: () => _showBottomSheet(context),
-              /*   setState(() {
-                  tasks.add(Task(
-                      color: Colors.red,
-                      dateStart: _selectedDay,
-                      dateEnd: _selectedDay,
-                      iconData: Icons.history_edu,
-                      isAllDay: false,
-                      note: 'dsd',
-                      title: 'dsd'));
-                });*/
-
-              child: Icon(Icons.add))
-        ],
-      ),
+    return ListView(
+      primary: true,
+      children: [
+        TableCalendar(
+          calendarFormat: calendarFormat,
+          calendarBuilders: CalendarBuilders(),
+          availableGestures: AvailableGestures.horizontalSwipe,
+          dayHitTestBehavior: HitTestBehavior.deferToChild,
+          firstDay: _firstDay,
+          focusedDay: _focusedDay,
+          lastDay: _lastDay,
+          availableCalendarFormats: {
+            CalendarFormat.week: 'Week',
+            CalendarFormat.month: 'Month',
+          },
+          onDaySelected: _dateSelected,
+          eventLoader: _getTasksForDay,
+          selectedDayPredicate: (day) {
+            return isSameDay(_selectedDay, day);
+          },
+          onFormatChanged: (newFormat) =>
+              setState(() => calendarFormat = newFormat),
+        ),
+        const SizedBox(height: 8.0),
+        ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _getTasksForDay(_selectedDay).length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                  vertical: 4.0,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: ListTile(
+                  onTap: () => print('${tasks[index]}'),
+                  title: Text('${_getTasksForDay(_selectedDay)[index].title}'),
+                ),
+              );
+            }),
+        const SizedBox(height: 8.0),
+        ElevatedButton(
+            onPressed: () => _showBottomSheet(context), child: Icon(Icons.add))
+      ],
     );
   }
 
