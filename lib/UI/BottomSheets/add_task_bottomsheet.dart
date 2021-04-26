@@ -35,7 +35,7 @@ class AddTaskBottomSheet extends StatelessWidget {
             ElevatedButton.icon(
                 onPressed: () {
                   Navigator.of(context).pop(Task(
-                      color: Colors.red,
+                      color: Colors.yellow,
                       dateStart: selectedDay ?? DateTime.now(),
                       dateEnd: selectedDay ?? DateTime.now(),
                       iconData: Icons.history_edu,
