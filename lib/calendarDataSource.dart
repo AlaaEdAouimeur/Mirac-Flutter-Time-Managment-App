@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+import 'package:tyme/models/Category.dart';
 
 import 'package:tyme/models/Task.dart';
 
@@ -37,7 +38,7 @@ class TasksDataSource extends CalendarDataSource {
     return source[index].color;
   }
 
-  IconData getIcon(int index) {
-    return source[index].iconData;
+  Category getCategory(int index) {
+    return source[index].category;
   }
 }

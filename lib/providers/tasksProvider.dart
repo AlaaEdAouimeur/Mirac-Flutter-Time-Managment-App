@@ -10,7 +10,10 @@ class TasksProvider extends StateNotifier<List<Task>> {
   get getTasks => state = _allTasks;
   List<Task> getTasksWhere(DateTime dateTime) {
     return _allTasks
-        .where((element) => dateTime.compareTo(element.dateStart) == 0)
+        .where((element) =>
+            dateTime.day == element.dateStart.day &&
+            dateTime.month == element.dateStart.month &&
+            dateTime.year == element.dateStart.year)
         .toList();
   }
 

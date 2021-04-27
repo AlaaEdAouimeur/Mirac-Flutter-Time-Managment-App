@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:tyme/UI/HomePage.dart';
 
 void main() {
-  runApp(ProviderScope(
-    child: MyApp(),
-  ));
+  initializeDateFormatting('fr_FR', null).then((_) => runApp(ProviderScope(
+        child: MyApp(),
+      )));
 }
 
 class MyApp extends ConsumerWidget {

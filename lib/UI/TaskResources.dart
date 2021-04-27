@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tyme/models/Task.dart';
+import 'package:tyme/utils/konstants.dart';
 
 class TaskResources {
   static List<Task> getTasks() {
@@ -24,7 +25,7 @@ class TaskResources {
           title: 'Task ' + i.toString(),
           note: 'Note ' + i.toString(),
           color: colorCollection[i],
-          iconData: Icons.work,
+          category: categories[0],
           dateStart: DateTime.now(),
           dateEnd: DateTime.now().add(Duration(hours: i)),
           isAllDay: false));

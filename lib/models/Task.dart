@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import 'package:tyme/models/Category.dart';
+
 class Task {
   String title;
   String note;
   Color color;
-  IconData iconData;
+  Category category;
   DateTime dateStart;
   DateTime dateEnd;
   bool isAllDay;
@@ -14,7 +16,7 @@ class Task {
     required this.title,
     required this.note,
     required this.color,
-    required this.iconData,
+    required this.category,
     required this.dateStart,
     required this.dateEnd,
     required this.isAllDay,
@@ -24,7 +26,7 @@ class Task {
     String? title,
     String? note,
     Color? color,
-    IconData? iconData,
+    Category? category,
     DateTime? dateStart,
     DateTime? dateEnd,
     bool? isAllDay,
@@ -33,7 +35,7 @@ class Task {
       title: title ?? this.title,
       note: note ?? this.note,
       color: color ?? this.color,
-      iconData: iconData ?? this.iconData,
+      category: category ?? this.category,
       dateStart: dateStart ?? this.dateStart,
       dateEnd: dateEnd ?? this.dateEnd,
       isAllDay: isAllDay ?? this.isAllDay,
@@ -45,7 +47,7 @@ class Task {
       'title': title,
       'note': note,
       'color': color.value,
-      'iconData': iconData.codePoint,
+      'category': category.toMap(),
       'dateStart': dateStart.millisecondsSinceEpoch,
       'dateEnd': dateEnd.millisecondsSinceEpoch,
       'isAllDay': isAllDay,
@@ -57,7 +59,7 @@ class Task {
       title: map['title'],
       note: map['note'],
       color: Color(map['color']),
-      iconData: IconData(map['iconData'], fontFamily: 'MaterialIcons'),
+      category: Category.fromMap(map['category']),
       dateStart: DateTime.fromMillisecondsSinceEpoch(map['dateStart']),
       dateEnd: DateTime.fromMillisecondsSinceEpoch(map['dateEnd']),
       isAllDay: map['isAllDay'],
@@ -70,7 +72,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task(title: $title, note: $note, color: $color, iconData: $iconData, dateStart: $dateStart, dateEnd: $dateEnd, isAllDay: $isAllDay)';
+    return 'Task(title: $title, note: $note, color: $color, category: $category, dateStart: $dateStart, dateEnd: $dateEnd, isAllDay: $isAllDay)';
   }
 
   @override
@@ -81,7 +83,7 @@ class Task {
         other.title == title &&
         other.note == note &&
         other.color == color &&
-        other.iconData == iconData &&
+        other.category == category &&
         other.dateStart == dateStart &&
         other.dateEnd == dateEnd &&
         other.isAllDay == isAllDay;
@@ -92,7 +94,7 @@ class Task {
     return title.hashCode ^
         note.hashCode ^
         color.hashCode ^
-        iconData.hashCode ^
+        category.hashCode ^
         dateStart.hashCode ^
         dateEnd.hashCode ^
         isAllDay.hashCode;

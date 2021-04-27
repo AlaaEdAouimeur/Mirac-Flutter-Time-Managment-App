@@ -8,6 +8,7 @@ import 'package:tyme/models/Task.dart';
 import 'package:tyme/providers/tasksProvider.dart';
 
 import 'package:tyme/utils/dateUtils.dart';
+import 'package:tyme/utils/konstants.dart';
 
 class CalendarWidget extends StatefulWidget {
   @override
@@ -37,6 +38,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   void _showBottomSheet(BuildContext context) async {
     final Task? task = await showModalBottomSheet<Task>(
         isScrollControlled: true,
+        isDismissible: false,
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -54,7 +56,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             color: Colors.yellow,
             dateStart: DateTime.now(),
             dateEnd: DateTime.now(),
-            iconData: Icons.history_edu,
+            category: categories[0],
             isAllDay: false,
             note: 'dsd',
             title: 'dsd'));
@@ -71,6 +73,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           primary: true,
           children: [
             TableCalendar(
+              locale: 'fr_FR',
               calendarFormat: calendarFormat,
               calendarBuilders: CalendarBuilders(),
               availableGestures: AvailableGestures.horizontalSwipe,

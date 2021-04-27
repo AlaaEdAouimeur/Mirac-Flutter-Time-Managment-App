@@ -28,30 +28,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.white,
       ),
-      //drawer: Drawer(child:,),
-      //
       body: CalendarWidget(),
-      /* ListView(
-        children: [
-          Container(
-            height: 600,
-            child: SfCalendar(
-              onTap: (calendarTapDetails) {
-              
-                print(calendarTapDetails.resource?.displayName);
-
-             
-              },
-              view: CalendarView.month,
-              dataSource: _events,
-              monthViewSettings:
-                  MonthViewSettings(showAgenda: true, numberOfWeeksInView: 6),
-              timeSlotViewSettings: TimeSlotViewSettings(
-                  minimumAppointmentDuration: const Duration(minutes: 600000)),
-            ),
-          )
-        ],
-      ),*/
     );
   }
 }
