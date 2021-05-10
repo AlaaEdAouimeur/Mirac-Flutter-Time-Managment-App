@@ -11,9 +11,9 @@ class TasksProvider extends StateNotifier<List<Task>> {
   List<Task> getTasksWhere(DateTime dateTime) {
     return _allTasks
         .where((element) =>
-            dateTime.day == element.dateStart.day &&
-            dateTime.month == element.dateStart.month &&
-            dateTime.year == element.dateStart.year)
+            dateTime.day == element.dueDate.day &&
+            dateTime.month == element.dueDate.month &&
+            dateTime.year == element.dueDate.year)
         .toList();
   }
 
@@ -28,8 +28,14 @@ class TasksProvider extends StateNotifier<List<Task>> {
   }
 
   void updateTask(Task task) {
-    deleteTask(task);
-    addTask(task);
+    _allTasks.singleWhere((element) => task == element).copyWith(
+        category: task.category,
+        color: task.color,
+        title: task.title,
+        dueDate: task.dueDate,
+        isAllDay: task.isAllDay,
+        note: task.note,
+        todos: task.todos);
     getTasks;
   }
 }

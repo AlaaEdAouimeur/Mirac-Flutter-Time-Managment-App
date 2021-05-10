@@ -1,25 +1,26 @@
 import 'dart:convert';
-
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 
 import 'package:tyme/models/Category.dart';
+import 'package:tyme/models/Todo.dart';
 
 class Task {
   String title;
   String note;
   Color color;
   Category category;
-  DateTime dateStart;
-  DateTime dateEnd;
+  DateTime dueDate;
   bool isAllDay;
+  List<Todo> todos;
   Task({
     required this.title,
     required this.note,
     required this.color,
     required this.category,
-    required this.dateStart,
-    required this.dateEnd,
+    required this.dueDate,
     required this.isAllDay,
+    this.todos = const [],
   });
 
   Task copyWith({
@@ -27,18 +28,18 @@ class Task {
     String? note,
     Color? color,
     Category? category,
-    DateTime? dateStart,
-    DateTime? dateEnd,
+    DateTime? dueDate,
     bool? isAllDay,
+    List<Todo>? todos,
   }) {
     return Task(
       title: title ?? this.title,
       note: note ?? this.note,
       color: color ?? this.color,
       category: category ?? this.category,
-      dateStart: dateStart ?? this.dateStart,
-      dateEnd: dateEnd ?? this.dateEnd,
+      dueDate: this.dueDate,
       isAllDay: isAllDay ?? this.isAllDay,
+      todos: todos ?? this.todos,
     );
   }
 
@@ -48,9 +49,9 @@ class Task {
       'note': note,
       'color': color.value,
       'category': category.toMap(),
-      'dateStart': dateStart.millisecondsSinceEpoch,
-      'dateEnd': dateEnd.millisecondsSinceEpoch,
+      'dueDate': dueDate.millisecondsSinceEpoch,
       'isAllDay': isAllDay,
+      'todos': todos.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -60,19 +61,21 @@ class Task {
       note: map['note'],
       color: Color(map['color']),
       category: Category.fromMap(map['category']),
-      dateStart: DateTime.fromMillisecondsSinceEpoch(map['dateStart']),
-      dateEnd: DateTime.fromMillisecondsSinceEpoch(map['dateEnd']),
+      dueDate: DateTime.fromMillisecondsSinceEpoch(map['dueDate']),
       isAllDay: map['isAllDay'],
+      todos: List<Todo>.from(map['todos']?.map((x) => Todo.fromMap(x))),
     );
   }
 
   String toJson() => json.encode(toMap());
-
+  int get todosCount => todos.length;
+  int get doneTodosCount =>
+      todos.where((element) => element.isDone == true).length;
   factory Task.fromJson(String source) => Task.fromMap(json.decode(source));
 
   @override
   String toString() {
-    return 'Task(title: $title, note: $note, color: $color, category: $category, dateStart: $dateStart, dateEnd: $dateEnd, isAllDay: $isAllDay)';
+    return 'Task(title: $title, note: $note, color: $color, category: $category, dateStart: $dueDate, isAllDay: $isAllDay, todos: $todos)';
   }
 
   @override
@@ -84,9 +87,9 @@ class Task {
         other.note == note &&
         other.color == color &&
         other.category == category &&
-        other.dateStart == dateStart &&
-        other.dateEnd == dateEnd &&
-        other.isAllDay == isAllDay;
+        other.dueDate == dueDate &&
+        other.isAllDay == isAllDay &&
+        listEquals(other.todos, todos);
   }
 
   @override
@@ -95,8 +98,8 @@ class Task {
         note.hashCode ^
         color.hashCode ^
         category.hashCode ^
-        dateStart.hashCode ^
-        dateEnd.hashCode ^
-        isAllDay.hashCode;
+        dueDate.hashCode ^
+        isAllDay.hashCode ^
+        todos.hashCode;
   }
 }

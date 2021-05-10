@@ -198,8 +198,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       _selectedTimeOfDay.minute);
                   Navigator.of(context).pop(Task(
                       color: colorsList[_selectedColorIndex],
-                      dateStart: _taskDate,
-                      dateEnd: widget.selectedDay ?? DateTime.now(),
+                      dueDate: _taskDate,
+                    //  dateEnd: widget.selectedDay ?? DateTime.now(),
                       isAllDay: false,
                       category: categories[_selectedCategoryIndex],
                       title: titleTextEditingController.text,

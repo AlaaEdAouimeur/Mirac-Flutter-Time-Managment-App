@@ -54,8 +54,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     context.read(appTasksProvider.notifier).addTask(task ??
         Task(
             color: Colors.yellow,
-            dateStart: DateTime.now(),
-            dateEnd: DateTime.now(),
+            dueDate: DateTime.now(),
             category: categories[0],
             isAllDay: false,
             note: 'dsd',

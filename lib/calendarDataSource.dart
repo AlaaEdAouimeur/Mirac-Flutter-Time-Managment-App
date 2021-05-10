@@ -14,13 +14,8 @@ class TasksDataSource extends CalendarDataSource {
   List<dynamic> get appointments => source;
 
   @override
-  DateTime getStartTime(int index) {
-    return source[index].dateStart;
-  }
-
-  @override
-  DateTime getEndTime(int index) {
-    return source[index].dateEnd;
+  DateTime getDueDate(int index) {
+    return source[index].dueDate;
   }
 
   @override

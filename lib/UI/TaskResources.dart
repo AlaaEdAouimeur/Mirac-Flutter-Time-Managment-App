@@ -26,8 +26,7 @@ class TaskResources {
           note: 'Note ' + i.toString(),
           color: colorCollection[i],
           category: categories[0],
-          dateStart: DateTime.now(),
-          dateEnd: DateTime.now().add(Duration(hours: i)),
+          dueDate: DateTime.now(),
           isAllDay: false));
     }
     return tasks;

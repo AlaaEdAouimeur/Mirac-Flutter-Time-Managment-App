@@ -6,8 +6,8 @@ class Todo {
   int priority;
   Todo({
     required this.content,
-    required this.isDone,
-    required this.priority,
+    this.isDone = false,
+    this.priority = 0,
   });
 
   Todo copyWith({
@@ -39,6 +39,7 @@ class Todo {
   }
 
   String toJson() => json.encode(toMap());
+  void toggleTodo() => isDone = !isDone;
 
   factory Todo.fromJson(String source) => Todo.fromMap(json.decode(source));
 
