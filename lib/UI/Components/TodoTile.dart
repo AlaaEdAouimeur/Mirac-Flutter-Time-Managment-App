@@ -1,8 +1,8 @@
 import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:tyme/models/Task.dart';
-import 'package:tyme/models/Todo.dart';
+import 'package:tyme/database/database.dart';
+import 'package:tyme/database/database.dart';
 
 class TodoTile extends StatefulWidget {
   final Todo todo;
@@ -17,8 +17,10 @@ class _TodoTileState extends State<TodoTile>
     with SingleTickerProviderStateMixin {
   AnimateIconController controller = AnimateIconController();
   bool isPlaying = false;
+  bool isDone = false;
   @override
   void initState() {
+    isDone = widget.todo.isDone;
     super.initState();
   }
 
@@ -26,7 +28,7 @@ class _TodoTileState extends State<TodoTile>
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        'Buy the milk',
+        widget.todo.content,
         style: TextStyle(
             color: widget.todo.isDone ? Colors.grey : Colors.black,
             decoration: widget.todo.isDone
@@ -34,10 +36,10 @@ class _TodoTileState extends State<TodoTile>
                 : TextDecoration.none),
       ),
       trailing: AnimateIcons(
-        startIcon: Icons.lens_outlined,
-        endIcon: Icons.check_circle_outline,
-        startIconColor: Colors.grey,
-        endIconColor: Colors.green,
+        startIcon: isDone ? Icons.check_circle_outline : Icons.lens_outlined,
+        endIcon: isDone ? Icons.lens_outlined : Icons.check_circle_outline,
+        startIconColor: isDone ? Colors.green : Colors.grey,
+        endIconColor: isDone ? Colors.grey : Colors.green,
         controller: controller,
         duration: Duration(milliseconds: 200),
         onStartIconPress: () {

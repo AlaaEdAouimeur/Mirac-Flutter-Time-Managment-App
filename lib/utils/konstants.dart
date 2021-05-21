@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tyme/models/Category.dart';
+import 'package:tyme/database/database.dart';
 
 const List<Color> colorsList = [
   Colors.red,
@@ -17,10 +17,32 @@ const List<String> colorsNames = [
   'yellow',
   'blue'
 ];
-List<Category> categories = [
-  Category(name: 'Work', iconData: Icons.work),
-  Category(name: 'Famille', iconData: Icons.family_restroom),
-  Category(name: 'House', iconData: Icons.house),
-  Category(name: 'Divertisement', iconData: Icons.local_play_outlined),
-  Category(name: 'Studies', iconData: Icons.book),
+
+List<Categorie> categories = [
+  Categorie(
+    color: Colors.red.value,
+    id: 0,
+    content: 'Work',
+    iconData: Icons.work.codePoint,
+  ),
+  Categorie(
+      color: Colors.amber.value,
+      id: 0,
+      content: 'Famille',
+      iconData: Icons.family_restroom.codePoint),
+  Categorie(
+      color: Colors.green.value,
+      id: 0,
+      content: 'House',
+      iconData: Icons.house.codePoint),
+  Categorie(
+      color: Colors.orange.value,
+      id: 0,
+      content: 'Divertisement',
+      iconData: Icons.local_play.codePoint),
+  Categorie(
+      color: Colors.grey.value,
+      id: 0,
+      content: 'Studies',
+      iconData: Icons.book.codePoint),
 ];

@@ -3,12 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:tyme/UI/HomePage.dart';
 import 'package:tyme/UI/TaskDetails.dart';
+import 'package:tyme/database/database.dart';
 
 void main() {
   initializeDateFormatting('fr_FR', null).then((_) => runApp(ProviderScope(
         child: MyApp(),
       )));
 }
+
+AppDatabase db = new AppDatabase();
 
 class MyApp extends ConsumerWidget {
   @override

@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tyme/UI/TaskDetails.dart';
-import 'package:tyme/models/Task.dart';
+import 'package:tyme/database/database.dart';
+import 'package:tyme/utils/konstants.dart';
 
 class TaskTile extends StatelessWidget {
   final Task task;
@@ -39,10 +40,10 @@ class TaskTile extends StatelessWidget {
           Container(
             height: 100,
             width: 5,
-            color: task.color,
+            color: Color(categories[task.category].color),
           ),
           Container(
-            color: task.color.withOpacity(0.2),
+            color: Color(categories[task.category].color).withOpacity(0.2),
             height: 100,
             width: MediaQuery.of(context).size.width * 3 / 4,
             child: Column(
@@ -67,24 +68,24 @@ class TaskTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Icon(
-                        task.category.iconData,
-                        color: task.color,
+                        IconData(task.category),
+                        color: Color(categories[task.category].color),
                       ),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
-                        task.category.name,
+                        task.category.toString(),
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),
                       Expanded(child: Container()),
-                      task.todosCount != 0
+                      /*  task.todosCount != 0
                           ? Text(task.doneTodosCount.toString() +
                               "/" +
                               task.todosCount.toString() +
                               " Todos")
-                          : Text('No todos yet'),
+                          : Text('No todos yet'),*/
                     ],
                   ),
                 )

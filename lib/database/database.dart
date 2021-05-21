@@ -1,7 +1,6 @@
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 
-// Moor works by source gen. This file will all the generated code.
 part 'database.g.dart';
 
 class Tasks extends Table {
@@ -11,8 +10,6 @@ class Tasks extends Table {
   IntColumn get category =>
       integer().customConstraint('NULL REFERENCES categories(id)')();
   TextColumn get note => text()();
-  IntColumn get color => integer().nullable()();
-  IntColumn get icon => integer().nullable()();
   DateTimeColumn get dueDate => dateTime()();
 }
 
@@ -28,6 +25,7 @@ class Todos extends Table {
 class Categories extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get color => integer().withDefault(Constant(0xff))();
+  IntColumn get iconData => integer().withDefault(Constant(0xff))();
   TextColumn get content => text().withLength(min: 1, max: 50)();
 }
 
@@ -53,17 +51,21 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Stream<List<Task>> watchAllTasks() => select(tasks).watch();
+  Future<List<Todo>> getAllTodos() => select(todos).get();
+  Stream<List<Todo>> watchAllTodos(int id) {
+    return (select(todos)..where((tbl) => tbl.taskId.equals(id))).watch();
+  }
 
-  Future insertTask(Task task) => into(tasks).insert(task);
-
+  Future insertTask(TasksCompanion task) => into(tasks).insert(task);
+  Future insertC(CategoriesCompanion cc) => into(categories).insert(cc);
   Future updateTask(Task task) => update(tasks).replace(task);
 
   Future deleteTask(Task task) => delete(tasks).delete(task);
 
-  Future insertTodo(Todo todo) => into(todos).insert(todo);
+  Future insertTodo(TodosCompanion todo) => into(todos).insert(todo);
 
   Future updateTodo(Todo todo) => update(todos).replace(todo);
-
+  Future getAllC() => select(categories).get();
   Future deleteTodo(Todo todo) => delete(todos).delete(todo);
   void insertCategories(Categorie c) => into(categories).insert(c);
 }

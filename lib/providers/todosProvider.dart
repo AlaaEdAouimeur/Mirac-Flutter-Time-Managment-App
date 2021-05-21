@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tyme/models/Task.dart';
-import 'package:tyme/models/Todo.dart';
+import 'package:tyme/database/database.dart';
+import 'package:tyme/database/database.dart';
 import 'package:tyme/providers/tasksProvider.dart';
 
 class TodosProvider extends StateNotifier<List<Todo>> {

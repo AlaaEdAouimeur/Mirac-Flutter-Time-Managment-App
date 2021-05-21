@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tyme/models/Task.dart';
+import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/konstants.dart';
-
+/*
 class TaskResources {
   static List<Task> getTasks() {
     final List<Color> colorCollection = <Color>[];
@@ -25,10 +25,11 @@ class TaskResources {
           title: 'Task ' + i.toString(),
           note: 'Note ' + i.toString(),
           color: colorCollection[i],
-          category: categories[0],
+          category: 0,
           dueDate: DateTime.now(),
           isAllDay: false));
     }
     return tasks;
   }
 }
+*/

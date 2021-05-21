@@ -12,16 +12,12 @@ class Task extends DataClass implements Insertable<Task> {
   final String title;
   final int category;
   final String note;
-  final int? color;
-  final int? icon;
   final DateTime dueDate;
   Task(
       {required this.id,
       required this.title,
       required this.category,
       required this.note,
-      this.color,
-      this.icon,
       required this.dueDate});
   factory Task.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -36,8 +32,6 @@ class Task extends DataClass implements Insertable<Task> {
       category:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}category'])!,
       note: stringType.mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
-      color: intType.mapFromDatabaseResponse(data['${effectivePrefix}color']),
-      icon: intType.mapFromDatabaseResponse(data['${effectivePrefix}icon']),
       dueDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}due_date'])!,
     );
@@ -49,12 +43,6 @@ class Task extends DataClass implements Insertable<Task> {
     map['title'] = Variable<String>(title);
     map['category'] = Variable<int>(category);
     map['note'] = Variable<String>(note);
-    if (!nullToAbsent || color != null) {
-      map['color'] = Variable<int?>(color);
-    }
-    if (!nullToAbsent || icon != null) {
-      map['icon'] = Variable<int?>(icon);
-    }
     map['due_date'] = Variable<DateTime>(dueDate);
     return map;
   }
@@ -65,9 +53,6 @@ class Task extends DataClass implements Insertable<Task> {
       title: Value(title),
       category: Value(category),
       note: Value(note),
-      color:
-          color == null && nullToAbsent ? const Value.absent() : Value(color),
-      icon: icon == null && nullToAbsent ? const Value.absent() : Value(icon),
       dueDate: Value(dueDate),
     );
   }
@@ -80,8 +65,6 @@ class Task extends DataClass implements Insertable<Task> {
       title: serializer.fromJson<String>(json['title']),
       category: serializer.fromJson<int>(json['category']),
       note: serializer.fromJson<String>(json['note']),
-      color: serializer.fromJson<int?>(json['color']),
-      icon: serializer.fromJson<int?>(json['icon']),
       dueDate: serializer.fromJson<DateTime>(json['dueDate']),
     );
   }
@@ -93,8 +76,6 @@ class Task extends DataClass implements Insertable<Task> {
       'title': serializer.toJson<String>(title),
       'category': serializer.toJson<int>(category),
       'note': serializer.toJson<String>(note),
-      'color': serializer.toJson<int?>(color),
-      'icon': serializer.toJson<int?>(icon),
       'dueDate': serializer.toJson<DateTime>(dueDate),
     };
   }
@@ -104,16 +85,12 @@ class Task extends DataClass implements Insertable<Task> {
           String? title,
           int? category,
           String? note,
-          int? color,
-          int? icon,
           DateTime? dueDate}) =>
       Task(
         id: id ?? this.id,
         title: title ?? this.title,
         category: category ?? this.category,
         note: note ?? this.note,
-        color: color ?? this.color,
-        icon: icon ?? this.icon,
         dueDate: dueDate ?? this.dueDate,
       );
   @override
@@ -123,8 +100,6 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('title: $title, ')
           ..write('category: $category, ')
           ..write('note: $note, ')
-          ..write('color: $color, ')
-          ..write('icon: $icon, ')
           ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
@@ -133,14 +108,8 @@ class Task extends DataClass implements Insertable<Task> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(
-          title.hashCode,
-          $mrjc(
-              category.hashCode,
-              $mrjc(
-                  note.hashCode,
-                  $mrjc(color.hashCode,
-                      $mrjc(icon.hashCode, dueDate.hashCode)))))));
+      $mrjc(title.hashCode,
+          $mrjc(category.hashCode, $mrjc(note.hashCode, dueDate.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -149,8 +118,6 @@ class Task extends DataClass implements Insertable<Task> {
           other.title == this.title &&
           other.category == this.category &&
           other.note == this.note &&
-          other.color == this.color &&
-          other.icon == this.icon &&
           other.dueDate == this.dueDate);
 }
 
@@ -159,16 +126,12 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String> title;
   final Value<int> category;
   final Value<String> note;
-  final Value<int?> color;
-  final Value<int?> icon;
   final Value<DateTime> dueDate;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.category = const Value.absent(),
     this.note = const Value.absent(),
-    this.color = const Value.absent(),
-    this.icon = const Value.absent(),
     this.dueDate = const Value.absent(),
   });
   TasksCompanion.insert({
@@ -176,8 +139,6 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required String title,
     required int category,
     required String note,
-    this.color = const Value.absent(),
-    this.icon = const Value.absent(),
     required DateTime dueDate,
   })   : title = Value(title),
         category = Value(category),
@@ -188,8 +149,6 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<String>? title,
     Expression<int>? category,
     Expression<String>? note,
-    Expression<int?>? color,
-    Expression<int?>? icon,
     Expression<DateTime>? dueDate,
   }) {
     return RawValuesInsertable({
@@ -197,8 +156,6 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (title != null) 'title': title,
       if (category != null) 'category': category,
       if (note != null) 'note': note,
-      if (color != null) 'color': color,
-      if (icon != null) 'icon': icon,
       if (dueDate != null) 'due_date': dueDate,
     });
   }
@@ -208,16 +165,12 @@ class TasksCompanion extends UpdateCompanion<Task> {
       Value<String>? title,
       Value<int>? category,
       Value<String>? note,
-      Value<int?>? color,
-      Value<int?>? icon,
       Value<DateTime>? dueDate}) {
     return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       category: category ?? this.category,
       note: note ?? this.note,
-      color: color ?? this.color,
-      icon: icon ?? this.icon,
       dueDate: dueDate ?? this.dueDate,
     );
   }
@@ -237,12 +190,6 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
-    if (color.present) {
-      map['color'] = Variable<int?>(color.value);
-    }
-    if (icon.present) {
-      map['icon'] = Variable<int?>(icon.value);
-    }
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
     }
@@ -256,8 +203,6 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('title: $title, ')
           ..write('category: $category, ')
           ..write('note: $note, ')
-          ..write('color: $color, ')
-          ..write('icon: $icon, ')
           ..write('dueDate: $dueDate')
           ..write(')'))
         .toString();
@@ -303,28 +248,6 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     );
   }
 
-  final VerificationMeta _colorMeta = const VerificationMeta('color');
-  @override
-  late final GeneratedIntColumn color = _constructColor();
-  GeneratedIntColumn _constructColor() {
-    return GeneratedIntColumn(
-      'color',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _iconMeta = const VerificationMeta('icon');
-  @override
-  late final GeneratedIntColumn icon = _constructIcon();
-  GeneratedIntColumn _constructIcon() {
-    return GeneratedIntColumn(
-      'icon',
-      $tableName,
-      true,
-    );
-  }
-
   final VerificationMeta _dueDateMeta = const VerificationMeta('dueDate');
   @override
   late final GeneratedDateTimeColumn dueDate = _constructDueDate();
@@ -337,8 +260,7 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   }
 
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, title, category, note, color, icon, dueDate];
+  List<GeneratedColumn> get $columns => [id, title, category, note, dueDate];
   @override
   $TasksTable get asDslTable => this;
   @override
@@ -370,14 +292,6 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
           _noteMeta, note.isAcceptableOrUnknown(data['note']!, _noteMeta));
     } else if (isInserting) {
       context.missing(_noteMeta);
-    }
-    if (data.containsKey('color')) {
-      context.handle(
-          _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
-    }
-    if (data.containsKey('icon')) {
-      context.handle(
-          _iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
     }
     if (data.containsKey('due_date')) {
       context.handle(_dueDateMeta,
@@ -661,8 +575,13 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
 class Categorie extends DataClass implements Insertable<Categorie> {
   final int id;
   final int color;
+  final int iconData;
   final String content;
-  Categorie({required this.id, required this.color, required this.content});
+  Categorie(
+      {required this.id,
+      required this.color,
+      required this.iconData,
+      required this.content});
   factory Categorie.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -671,6 +590,8 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     return Categorie(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       color: intType.mapFromDatabaseResponse(data['${effectivePrefix}color'])!,
+      iconData:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}icon_data'])!,
       content: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
     );
@@ -680,6 +601,7 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['color'] = Variable<int>(color);
+    map['icon_data'] = Variable<int>(iconData);
     map['content'] = Variable<String>(content);
     return map;
   }
@@ -688,6 +610,7 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     return CategoriesCompanion(
       id: Value(id),
       color: Value(color),
+      iconData: Value(iconData),
       content: Value(content),
     );
   }
@@ -698,6 +621,7 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     return Categorie(
       id: serializer.fromJson<int>(json['id']),
       color: serializer.fromJson<int>(json['color']),
+      iconData: serializer.fromJson<int>(json['iconData']),
       content: serializer.fromJson<String>(json['content']),
     );
   }
@@ -707,13 +631,16 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'color': serializer.toJson<int>(color),
+      'iconData': serializer.toJson<int>(iconData),
       'content': serializer.toJson<String>(content),
     };
   }
 
-  Categorie copyWith({int? id, int? color, String? content}) => Categorie(
+  Categorie copyWith({int? id, int? color, int? iconData, String? content}) =>
+      Categorie(
         id: id ?? this.id,
         color: color ?? this.color,
+        iconData: iconData ?? this.iconData,
         content: content ?? this.content,
       );
   @override
@@ -721,54 +648,65 @@ class Categorie extends DataClass implements Insertable<Categorie> {
     return (StringBuffer('Categorie(')
           ..write('id: $id, ')
           ..write('color: $color, ')
+          ..write('iconData: $iconData, ')
           ..write('content: $content')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(color.hashCode, content.hashCode)));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(color.hashCode, $mrjc(iconData.hashCode, content.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Categorie &&
           other.id == this.id &&
           other.color == this.color &&
+          other.iconData == this.iconData &&
           other.content == this.content);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Categorie> {
   final Value<int> id;
   final Value<int> color;
+  final Value<int> iconData;
   final Value<String> content;
   const CategoriesCompanion({
     this.id = const Value.absent(),
     this.color = const Value.absent(),
+    this.iconData = const Value.absent(),
     this.content = const Value.absent(),
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
     this.color = const Value.absent(),
+    this.iconData = const Value.absent(),
     required String content,
   }) : content = Value(content);
   static Insertable<Categorie> custom({
     Expression<int>? id,
     Expression<int>? color,
+    Expression<int>? iconData,
     Expression<String>? content,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (color != null) 'color': color,
+      if (iconData != null) 'icon_data': iconData,
       if (content != null) 'content': content,
     });
   }
 
   CategoriesCompanion copyWith(
-      {Value<int>? id, Value<int>? color, Value<String>? content}) {
+      {Value<int>? id,
+      Value<int>? color,
+      Value<int>? iconData,
+      Value<String>? content}) {
     return CategoriesCompanion(
       id: id ?? this.id,
       color: color ?? this.color,
+      iconData: iconData ?? this.iconData,
       content: content ?? this.content,
     );
   }
@@ -782,6 +720,9 @@ class CategoriesCompanion extends UpdateCompanion<Categorie> {
     if (color.present) {
       map['color'] = Variable<int>(color.value);
     }
+    if (iconData.present) {
+      map['icon_data'] = Variable<int>(iconData.value);
+    }
     if (content.present) {
       map['content'] = Variable<String>(content.value);
     }
@@ -793,6 +734,7 @@ class CategoriesCompanion extends UpdateCompanion<Categorie> {
     return (StringBuffer('CategoriesCompanion(')
           ..write('id: $id, ')
           ..write('color: $color, ')
+          ..write('iconData: $iconData, ')
           ..write('content: $content')
           ..write(')'))
         .toString();
@@ -820,6 +762,14 @@ class $CategoriesTable extends Categories
         defaultValue: Constant(0xff));
   }
 
+  final VerificationMeta _iconDataMeta = const VerificationMeta('iconData');
+  @override
+  late final GeneratedIntColumn iconData = _constructIconData();
+  GeneratedIntColumn _constructIconData() {
+    return GeneratedIntColumn('icon_data', $tableName, false,
+        defaultValue: Constant(0xff));
+  }
+
   final VerificationMeta _contentMeta = const VerificationMeta('content');
   @override
   late final GeneratedTextColumn content = _constructContent();
@@ -829,7 +779,7 @@ class $CategoriesTable extends Categories
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, color, content];
+  List<GeneratedColumn> get $columns => [id, color, iconData, content];
   @override
   $CategoriesTable get asDslTable => this;
   @override
@@ -847,6 +797,10 @@ class $CategoriesTable extends Categories
     if (data.containsKey('color')) {
       context.handle(
           _colorMeta, color.isAcceptableOrUnknown(data['color']!, _colorMeta));
+    }
+    if (data.containsKey('icon_data')) {
+      context.handle(_iconDataMeta,
+          iconData.isAcceptableOrUnknown(data['icon_data']!, _iconDataMeta));
     }
     if (data.containsKey('content')) {
       context.handle(_contentMeta,

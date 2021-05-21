@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:tyme/models/Category.dart';
+import 'package:tyme/database/database.dart';
 
 class CategoryTile extends StatelessWidget {
-  final Category? category;
+  final Categorie? category;
 
   const CategoryTile({Key? key, this.category}) : super(key: key);
 
@@ -11,8 +11,8 @@ class CategoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-      leading: Icon(category?.iconData),
-      title: Text(category?.name ?? ''),
+      leading: Icon(IconData(category?.iconData ?? 0xff)),
+      title: Text(category?.content ?? ''),
     );
   }
 }

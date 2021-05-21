@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:moor/moor.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/BottomSheets/add_task_bottomsheet.dart';
 import 'package:tyme/UI/Components/TaskTile.dart';
 
-import 'package:tyme/models/Task.dart';
+import 'package:tyme/database/database.dart';
+import 'package:tyme/main.dart';
 import 'package:tyme/providers/tasksProvider.dart';
 
 import 'package:tyme/utils/dateUtils.dart';
@@ -18,10 +20,11 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _lastDay = kLastDay;
   DateTime _firstDay = kFirstDay;
+  List<Task> tasks = [];
+
   CalendarFormat calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = kToday;
   DateTime _selectedDay = kToday;
-  List<Task> tasks = [];
 
   /*List<Task> _getTasksForDay(DateTime day, context) {
     context.read(appTasksProvider).getTasksWhere(day);
@@ -36,7 +39,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _showBottomSheet(BuildContext context) async {
-    final Task? task = await showModalBottomSheet<Task>(
+    showModalBottomSheet<Task>(
+        isScrollControlled: true,
+        isDismissible: false,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+        ),
+        context: context,
+        builder: (context) {
+          return AddTaskBottomSheet(
+            selectedDay: _selectedDay,
+          );
+        });
+    /* final Task? task = await showModalBottomSheet<Task>(
         isScrollControlled: true,
         isDismissible: false,
         clipBehavior: Clip.antiAlias,
@@ -53,13 +70,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     context.read(appTasksProvider.notifier).addTask(task ??
         Task(
-            color: Colors.yellow,
+            id: 0,
+            color: int.parse(Colors.yellow.toString()),
             dueDate: DateTime.now(),
-            category: categories[0],
-            isAllDay: false,
+            category: 0,
             note: 'dsd',
             title: 'dsd'));
-    // tasks.add(task ?? tasks[0]);
+    // tasks.add(task ?? tasks[0]);*/
   }
 
   @override
@@ -95,21 +112,41 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   setState(() => calendarFormat = newFormat),
             ),
             const SizedBox(height: 8.0),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: tasksProvider.getTasksWhere(_selectedDay).length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TaskTile(
-                      task: tasksProvider.getTasksWhere(_selectedDay)[index],
-                    ),
-                  );
-                }),
+            StreamBuilder(
+              stream: db.watchAllTasks(),
+              //  initialData: initialData ,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) return Text('Error Try again');
+                if (snapshot.hasData)
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TaskTile(
+                            task: snapshot.data[index],
+                          ),
+                        );
+                      });
+                else
+                  return Text('not');
+              },
+            ),
             const SizedBox(height: 8.0),
             ElevatedButton(
-                onPressed: () => _showBottomSheet(context),
+                onPressed: () {
+                  _showBottomSheet(context);
+                  /*   db.insertC(CategoriesCompanion(
+                      content: Value('s'), color: Value(0xff)));
+                  /* TasksCompanion.insert(
+                      title: 'title',
+                      category: 0,
+                      note: 'note',
+                      dueDate: DateTime.now());*/
+                  db.getAllC().then((value) => print(value.length));*/
+                }, //_showBottomSheet(context),
                 child: Icon(Icons.add))
           ],
         );

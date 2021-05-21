@@ -1,11 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tyme/UI/TaskResources.dart';
 
-import 'package:tyme/models/Task.dart';
+import 'package:tyme/database/database.dart';
 
 class TasksProvider extends StateNotifier<List<Task>> {
   TasksProvider(List<Task> state) : super(state);
-  List<Task> _allTasks = TaskResources.getTasks();
+  List<Task> _allTasks = [];
 
   get getTasks => state = _allTasks;
   List<Task> getTasksWhere(DateTime dateTime) {
@@ -29,13 +29,13 @@ class TasksProvider extends StateNotifier<List<Task>> {
 
   void updateTask(Task task) {
     _allTasks.singleWhere((element) => task == element).copyWith(
-        category: task.category,
-        color: task.color,
-        title: task.title,
-        dueDate: task.dueDate,
-        isAllDay: task.isAllDay,
-        note: task.note,
-        todos: task.todos);
+          category: task.category,
+
+          title: task.title,
+          dueDate: task.dueDate,
+          //TODO FUNCTIONS CRUD
+          note: task.note,
+        );
     getTasks;
   }
 }

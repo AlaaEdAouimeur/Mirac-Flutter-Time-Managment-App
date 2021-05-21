@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tyme/UI/Components/AppTextField.dart';
-import 'package:tyme/models/Task.dart';
+import 'package:tyme/database/database.dart';
+import 'package:tyme/main.dart';
 import 'package:tyme/utils/dateUtils.dart';
 import 'package:tyme/utils/konstants.dart';
 
@@ -37,12 +38,13 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                     leading: Icon(
-                      categories[index].iconData,
+                      IconData(categories[index].iconData,
+                          fontFamily: 'MaterialIcons'),
                       color: index == _selectedCategoryIndex
                           ? Colors.amber
                           : Colors.black,
                     ),
-                    title: Text(categories[index].name),
+                    title: Text(categories[index].content),
                     onTap: () {
                       setState(() {
                         _selectedCategoryIndex = index;
@@ -98,118 +100,131 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height - 30,
-      ),
-      child: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            AppTextField(
-              hintText: 'What Task',
-              textEditingController: titleTextEditingController,
-              isObligatory: true,
-            ),
-            AppTextField(
-              hintText: 'Description',
-              textEditingController: noteTextEditingController,
-              isObligatory: false,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            ListTile(
-              leading: GestureDetector(
-                child:
-                    Text(DateFormat.yMMMMd('fr_FR').format(_selectedDateTime)),
-                onTap: () async {
-                  final date = await showDatePicker(
-                      context: context,
-                      initialDate: _selectedDateTime,
-                      firstDate: DateTime(kToday.year, 1, 1),
-                      lastDate: DateTime(kToday.year, 31, 12));
-                  setState(() {
-                    _selectedDateTime = date ?? DateTime.now();
-                  });
-                },
-              ),
-              trailing: GestureDetector(
-                child: Text(_selectedTimeOfDay.format(context)),
-                onTap: () async {
-                  final date = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                  );
-                  setState(() {
-                    _selectedTimeOfDay = date ?? TimeOfDay.now();
-                  });
-                },
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-              leading: Icon(
-                categories[_selectedCategoryIndex].iconData,
-                color: Colors.amber,
-              ),
-              title: Text(categories[_selectedCategoryIndex].name),
-              onTap: () {
-                showDialog<Widget>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return categoryPicker();
-                  },
-                );
-              },
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-              leading: Icon(
-                Icons.lens,
-                color: colorsList[_selectedColorIndex],
-              ),
-              title: Text(colorsNames[_selectedColorIndex]),
-              onTap: () {
-                showDialog<Widget>(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) {
-                    return colorPicker();
-                  },
-                );
-              },
-            ),
-            ElevatedButton.icon(
-                onPressed: () {
-                  final DateTime _taskDate = DateTime(
-                      _selectedDateTime.year,
-                      _selectedDateTime.month,
-                      _selectedDateTime.day,
-                      _selectedTimeOfDay.hour,
-                      _selectedTimeOfDay.minute);
-                  Navigator.of(context).pop(Task(
-                      color: colorsList[_selectedColorIndex],
-                      dueDate: _taskDate,
-                    //  dateEnd: widget.selectedDay ?? DateTime.now(),
-                      isAllDay: false,
-                      category: categories[_selectedCategoryIndex],
-                      title: titleTextEditingController.text,
-                      note: noteTextEditingController.text));
-                },
-                icon: Icon(Icons.done),
-                label: Text('Done'))
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(0.0),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height - 30,
         ),
-      )),
+        child: SingleChildScrollView(
+            child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              AppTextField(
+                hintText: 'What Task',
+                textEditingController: titleTextEditingController,
+                isObligatory: true,
+              ),
+              AppTextField(
+                hintText: 'Description',
+                textEditingController: noteTextEditingController,
+                isObligatory: false,
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              ListTile(
+                leading: GestureDetector(
+                  child: Text(
+                      DateFormat.yMMMMd('fr_FR').format(_selectedDateTime)),
+                  onTap: () async {
+                    final date = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDateTime,
+                        firstDate: DateTime(kToday.year, 1, 1),
+                        lastDate: DateTime(kToday.year, 31, 12));
+                    setState(() {
+                      _selectedDateTime = date ?? DateTime.now();
+                    });
+                  },
+                ),
+                trailing: GestureDetector(
+                  child: Text(_selectedTimeOfDay.format(context)),
+                  onTap: () async {
+                    final date = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    setState(() {
+                      _selectedTimeOfDay = date ?? TimeOfDay.now();
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                leading: Icon(
+                  IconData(categories[_selectedCategoryIndex].iconData,
+                      fontFamily: 'MaterialIcons'),
+                  color: Color(categories[_selectedCategoryIndex].color),
+                ),
+                title: Text(categories[_selectedCategoryIndex].content),
+                onTap: () {
+                  showDialog<Widget>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return categoryPicker();
+                    },
+                  );
+                },
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              /*  ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                leading: Icon(
+                  Icons.lens,
+                  color: colorsList[_selectedColorIndex],
+                ),
+                title: Text(colorsNames[_selectedColorIndex]),
+                onTap: () {
+                  showDialog<Widget>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) {
+                      return colorPicker();
+                    },
+                  );
+                },
+              ),*/
+              ElevatedButton.icon(
+                  onPressed: () {
+                    final DateTime _taskDate = DateTime(
+                        _selectedDateTime.year,
+                        _selectedDateTime.month,
+                        _selectedDateTime.day,
+                        _selectedTimeOfDay.hour,
+                        _selectedTimeOfDay.minute);
+                    //TODO ADD TASK
+                    db.insertTask(TasksCompanion.insert(
+                        title: titleTextEditingController.text,
+                        category: _selectedCategoryIndex,
+                        note: noteTextEditingController.text,
+                        dueDate: _taskDate));
+
+                    Navigator.of(context).pop();
+                    /* Navigator.of(context).pop(Task(
+                      id: 0,
+                        color: colorsList[_selectedColorIndex],
+                        dueDate: _taskDate,
+                        //  dateEnd: widget.selectedDay ?? DateTime.now(),
+                        isAllDay: false,
+                        category: categories[_selectedCategoryIndex],
+                        title: titleTextEditingController.text,
+                        note: noteTextEditingController.text));*/
+                  },
+                  icon: Icon(Icons.done),
+                  label: Text('Done'))
+            ],
+          ),
+        )),
+      ),
     );
   }
 }
