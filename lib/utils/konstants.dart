@@ -18,6 +18,12 @@ const List<String> colorsNames = [
   'blue'
 ];
 
+class AppColors {
+  static Color bleuGrey = Colors.blueGrey[100] ?? Color(0xff);
+  static Color trafficWhite = Color(0xffedf6ff);
+  static Color darkGrey = Color(0xff7a7e81);
+}
+
 List<Categorie> categories = [
   Categorie(
     color: Colors.red.value,

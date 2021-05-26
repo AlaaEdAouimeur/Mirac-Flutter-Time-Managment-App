@@ -16,7 +16,7 @@ class Tasks extends Table {
 class Todos extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  TextColumn get content => text().withLength(min: 1, max: 50)();
+  TextColumn get content => text().withLength(min: 0, max: 50)();
   BoolColumn get isDone => boolean().withDefault(Constant(false))();
   IntColumn get taskId =>
       integer().customConstraint('NULL REFERENCES tasks(id)')();
@@ -45,6 +45,8 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
   Future<List<Task>> getAllTasks() => select(tasks).get();
+  Future<Task> getTask(int id) =>
+      (select(tasks)..where((tbl) => tbl.id.equals(id))).getSingle();
   Future<List<Todo>> getAllNotes(int id) async {
     List<Todo> list = await select(todos).get();
     return list.where((element) => element.id == id).toList();

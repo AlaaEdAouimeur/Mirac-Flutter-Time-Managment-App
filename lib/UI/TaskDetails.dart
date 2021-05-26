@@ -1,4 +1,5 @@
 import 'package:animate_icons/animate_icons.dart';
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -22,13 +23,60 @@ class TaskDetails extends StatefulWidget {
 
 class _TaskDetailsState extends State<TaskDetails>
     with SingleTickerProviderStateMixin {
+  List<FocusNode> _nodes = [];
+  late DateTime _selectedDateTime;
+  late TimeOfDay _selectedDayTime;
   AnimateIconController controller = AnimateIconController();
   bool isPlaying = false;
   Categorie? _selectedCategory;
+  bool firstLoaded = true;
   @override
   void initState() {
-    gets();
+    _selectedDateTime = widget.task.dueDate;
+    _selectedDayTime = TimeOfDay.now();
     super.initState();
+  }
+
+  void getNodesNeeded() {
+    if (_nodes.length != lastitem) {
+      _nodes.clear();
+      for (int i = 0; i < lastitem; i++) _nodes.add(FocusNode());
+    }
+  }
+
+  void removeFocus() {
+    _nodes.forEach((element) {
+      element.unfocus();
+    });
+  }
+
+  void handleFocus() {
+    // ignore: unnecessary_statements
+    if (!firstLoaded && _nodes.isNotEmpty) {
+      removeFocus();
+      _nodes[lastitem - 1].requestFocus();
+    }
+  }
+
+  Widget tileLeading(IconData iconData, String title) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Icon(
+            iconData,
+            color: AppColors.darkGrey,
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Text(
+            title,
+            style: TextStyle(color: AppColors.darkGrey),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _dateWidget() {
@@ -59,6 +107,73 @@ class _TaskDetailsState extends State<TaskDetails>
           width: 50,
         )
       ],
+    );
+  }
+
+  Widget _dueDateWidget() {
+    return InkWell(
+      onTap: () async {
+        _selectedDateTime = await showDatePicker(
+                context: context,
+                initialDate: _selectedDateTime,
+                firstDate: kToday,
+                lastDate: kLastDay) ??
+            _selectedDateTime;
+      },
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              tileLeading(Icons.calendar_today_outlined, 'Due Date'),
+              Card(
+                elevation: 0,
+                margin: EdgeInsets.all(8),
+                color: AppColors.bleuGrey,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    DateFormat('EEE, M/d/y').format(_selectedDateTime),
+                    style: TextStyle(color: AppColors.darkGrey),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _reminderWidget() {
+    return InkWell(
+      onTap: () async {
+        _selectedDayTime = await showTimePicker(
+                context: context, initialTime: _selectedDayTime) ??
+            _selectedDayTime;
+      },
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              tileLeading(Icons.notifications_none, 'Reminder'),
+              Card(
+                elevation: 0,
+                margin: EdgeInsets.all(8),
+                color: AppColors.bleuGrey,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    _selectedDayTime.format(context),
+                    style: TextStyle(color: AppColors.darkGrey),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -105,65 +220,166 @@ class _TaskDetailsState extends State<TaskDetails>
         )*/
       ],
     );
-    print('ds');
   }
 
-  void gets() async {
-    List<Todo> todos = await db.getAllTodos();
-    print(todos.length);
-  }
-
+  CustomPopupMenuController _controller = CustomPopupMenuController();
+  int lastitem = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.trafficWhite,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.trafficWhite,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          //TODO ADD THE THREE DOTS
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: CustomPopupMenu(
+              child: Icon(Icons.more_vert),
+              menuBuilder: () => ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  color: AppColors.trafficWhite,
+                  child: IntrinsicWidth(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            _controller.hideMenu();
+                            db.deleteTask(widget.task);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 40,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.delete,
+                                  size: 15,
+                                  color: Colors.black,
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    child: Text(
+                                      'Delete',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              pressType: PressType.singleClick,
+              verticalMargin: -10,
+              controller: _controller,
+            ),
+          )
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.all(0.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
               //  _headerWidget(),
-              StreamBuilder(
-                stream: db.watchAllTodos(widget.task.id),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData)
-                    return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, index) {
-                          return TodoTile(
-                              todo: snapshot.data[index],
-                              onPressed: () {
-                                Todo todo = snapshot.data[index];
+              Container(
+                padding: const EdgeInsets.all(0.0),
+                child: StreamBuilder(
+                  stream: db.watchAllTodos(widget.task.id),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasData) {
+                      lastitem = snapshot.data.length;
+                      getNodesNeeded();
+                      handleFocus();
+                      print('LAST ITEM : ' + snapshot.data.length.toString());
+                      return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            print('NODES : ' + _nodes.length.toString());
+                            return TodoTile(
+                                todo: snapshot.data[index],
+                                focusNode: _nodes[index],
+                                onPressed: () {
+                                  Todo todo = snapshot.data[index];
 
-                                db.updateTodo(
-                                    todo.copyWith(isDone: !todo.isDone));
-                              });
-                        });
-                  else
-                    return Text('sad');
-                },
+                                  db.updateTodo(
+                                      todo.copyWith(isDone: !todo.isDone));
+                                });
+                          });
+                    } else
+                      return Text('sad');
+                  },
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  onTap: () {
+                    firstLoaded = false;
+                    db.insertTodo(TodosCompanion.insert(
+                        content: '', taskId: widget.task.id));
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.blue,
+                      ),
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Text(
+                        'Add Sub-task',
+                        style: TextStyle(color: Colors.blue),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Divider(color: AppColors.bleuGrey),
+              _dueDateWidget(),
+              Divider(color: AppColors.bleuGrey),
+              _reminderWidget(),
+              Divider(color: AppColors.bleuGrey),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () {
+      /*  floatingActionButton: FloatingActionButton(onPressed: () {
         db.insertTodo(
             TodosCompanion.insert(content: 'Eat Food', taskId: widget.task.id));
-      }),
+      }),*/
     );
+  }
+
+  @override
+  void dispose() {
+    _nodes.forEach((element) {
+      element.dispose();
+    });
+    super.dispose();
   }
 }

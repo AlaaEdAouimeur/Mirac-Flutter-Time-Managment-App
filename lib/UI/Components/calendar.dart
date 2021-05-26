@@ -4,6 +4,7 @@ import 'package:moor/moor.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/BottomSheets/add_task_bottomsheet.dart';
 import 'package:tyme/UI/Components/TaskTile.dart';
+import 'package:tyme/UI/TaskDetails.dart';
 
 import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
@@ -39,44 +40,28 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _showBottomSheet(BuildContext context) async {
-    showModalBottomSheet<Task>(
-        isScrollControlled: true,
-        isDismissible: false,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32), topRight: Radius.circular(32)),
-        ),
-        context: context,
-        builder: (context) {
-          return AddTaskBottomSheet(
-            selectedDay: _selectedDay,
-          );
-        });
-    /* final Task? task = await showModalBottomSheet<Task>(
-        isScrollControlled: true,
-        isDismissible: false,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(32), topRight: Radius.circular(32)),
-        ),
-        context: context,
-        builder: (context) {
-          return AddTaskBottomSheet(
-            selectedDay: _selectedDay,
-          );
-        });
-
-    context.read(appTasksProvider.notifier).addTask(task ??
+    Task task = await showModalBottomSheet<Task>(
+            isScrollControlled: true,
+            isDismissible: false,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+            ),
+            context: context,
+            builder: (context) {
+              return AddTaskBottomSheet(
+                selectedDay: _selectedDay,
+              );
+            }) ??
         Task(
             id: 0,
-            color: int.parse(Colors.yellow.toString()),
-            dueDate: DateTime.now(),
-            category: 0,
-            note: 'dsd',
-            title: 'dsd'));
-    // tasks.add(task ?? tasks[0]);*/
+            title: 'title',
+            category: 1,
+            note: 'note',
+            dueDate: DateTime.now());
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => TaskDetails(task: task)));
   }
 
   @override

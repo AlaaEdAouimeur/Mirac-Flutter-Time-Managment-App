@@ -504,7 +504,7 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   late final GeneratedTextColumn content = _constructContent();
   GeneratedTextColumn _constructContent() {
     return GeneratedTextColumn('content', $tableName, false,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 0, maxTextLength: 50);
   }
 
   final VerificationMeta _isDoneMeta = const VerificationMeta('isDone');

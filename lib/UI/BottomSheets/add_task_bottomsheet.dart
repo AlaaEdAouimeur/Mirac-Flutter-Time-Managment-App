@@ -53,7 +53,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       // ignore: always_specify_types
                       Future.delayed(const Duration(milliseconds: 200), () {
                         // When task is over, close the dialog
-                        Navigator.pop(context);
+                        Navigator.pop(
+                          context,
+                        );
                       });
                     },
                   ));
@@ -202,13 +204,16 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         _selectedTimeOfDay.hour,
                         _selectedTimeOfDay.minute);
                     //TODO ADD TASK
-                    db.insertTask(TasksCompanion.insert(
-                        title: titleTextEditingController.text,
-                        category: _selectedCategoryIndex,
-                        note: noteTextEditingController.text,
-                        dueDate: _taskDate));
+                    db
+                        .insertTask(TasksCompanion.insert(
+                            title: titleTextEditingController.text,
+                            category: _selectedCategoryIndex,
+                            note: noteTextEditingController.text,
+                            dueDate: _taskDate))
+                        .then((value) => db
+                            .getTask(value)
+                            .then((task) => Navigator.of(context).pop(task)));
 
-                    Navigator.of(context).pop();
                     /* Navigator.of(context).pop(Task(
                       id: 0,
                         color: colorsList[_selectedColorIndex],
