@@ -119,6 +119,8 @@ class _TaskDetailsState extends State<TaskDetails>
                 firstDate: kToday,
                 lastDate: kLastDay) ??
             _selectedDateTime;
+        db.updateTask(widget.task.copyWith(dueDate: _selectedDateTime));
+        setState(() {});
       },
       child: Column(
         children: [
@@ -133,7 +135,7 @@ class _TaskDetailsState extends State<TaskDetails>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    DateFormat('EEE, M/d/y').format(_selectedDateTime),
+                    DateFormat('EEE, d/M/y').format(_selectedDateTime),
                     style: TextStyle(color: AppColors.darkGrey),
                   ),
                 ),
@@ -151,6 +153,8 @@ class _TaskDetailsState extends State<TaskDetails>
         _selectedDayTime = await showTimePicker(
                 context: context, initialTime: _selectedDayTime) ??
             _selectedDayTime;
+        setState(() {});
+        //TODO ADD REMINDERS      db.updateTask(task)
       },
       child: Column(
         children: [
@@ -309,13 +313,12 @@ class _TaskDetailsState extends State<TaskDetails>
                       lastitem = snapshot.data.length;
                       getNodesNeeded();
                       handleFocus();
-                      print('LAST ITEM : ' + snapshot.data.length.toString());
+
                       return ListView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, index) {
-                            print('NODES : ' + _nodes.length.toString());
                             return TodoTile(
                                 todo: snapshot.data[index],
                                 focusNode: _nodes[index],

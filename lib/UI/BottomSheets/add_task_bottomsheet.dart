@@ -7,9 +7,10 @@ import 'package:tyme/utils/dateUtils.dart';
 import 'package:tyme/utils/konstants.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  final DateTime? selectedDay;
+  final DateTime selectedDay;
 
-  const AddTaskBottomSheet({Key? key, this.selectedDay}) : super(key: key);
+  const AddTaskBottomSheet({Key? key, required this.selectedDay})
+      : super(key: key);
 
   @override
   _AddTaskBottomSheetState createState() => _AddTaskBottomSheetState();
@@ -23,6 +24,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   int _selectedCategoryIndex = 0;
   DateTime _selectedDateTime = DateTime.now();
   TimeOfDay _selectedTimeOfDay = TimeOfDay.now();
+  @override
+  void initState() {
+    super.initState();
+    _selectedDateTime = widget.selectedDay;
+  }
 
   Widget categoryPicker() {
     return AlertDialog(
@@ -129,11 +135,11 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               ListTile(
                 leading: GestureDetector(
                   child: Text(
-                      DateFormat.yMMMMd('fr_FR').format(_selectedDateTime)),
+                      DateFormat.yMMMMd('fr_FR').format(widget.selectedDay)),
                   onTap: () async {
                     final date = await showDatePicker(
                         context: context,
-                        initialDate: _selectedDateTime,
+                        initialDate: widget.selectedDay,
                         firstDate: DateTime(kToday.year, 1, 1),
                         lastDate: DateTime(kToday.year, 31, 12));
                     setState(() {
@@ -203,7 +209,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         _selectedDateTime.day,
                         _selectedTimeOfDay.hour,
                         _selectedTimeOfDay.minute);
-                    //TODO ADD TASK
+
                     db
                         .insertTask(TasksCompanion.insert(
                             title: titleTextEditingController.text,

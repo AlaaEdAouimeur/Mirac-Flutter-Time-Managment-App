@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:tyme/UI/TaskDetails.dart';
+import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/konstants.dart';
 
@@ -43,7 +43,7 @@ class TaskTile extends StatelessWidget {
             color: Color(categories[task.category].color),
           ),
           Container(
-            color: Color(categories[task.category].color).withOpacity(0.2),
+            color: Color(categories[task.category].color).withOpacity(0.1),
             height: 100,
             width: MediaQuery.of(context).size.width * 3 / 4,
             child: Column(
@@ -68,14 +68,15 @@ class TaskTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Icon(
-                        IconData(task.category),
+                        IconData(categories[task.category].iconData,
+                            fontFamily: 'MaterialIcons'),
                         color: Color(categories[task.category].color),
                       ),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
-                        task.category.toString(),
+                        categories[task.category].content,
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),

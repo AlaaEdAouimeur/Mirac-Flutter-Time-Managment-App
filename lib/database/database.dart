@@ -45,6 +45,7 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
   Future<List<Task>> getAllTasks() => select(tasks).get();
+//  Future<List<Task>> getTasksByDate(DateTime dateTime) =>   (select(tasks)..where((tbl) => tbl.id.equals(id))).getSingle();
   Future<Task> getTask(int id) =>
       (select(tasks)..where((tbl) => tbl.id.equals(id))).getSingle();
   Future<List<Todo>> getAllNotes(int id) async {
@@ -53,6 +54,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Stream<List<Task>> watchAllTasks() => select(tasks).watch();
+  Stream<List<Task>> watchTasksByCategory(int index) =>
+      (select(tasks)..where((tbl) => tbl.category.equals(index))).watch();
   Future<List<Todo>> getAllTodos() => select(todos).get();
   Stream<List<Todo>> watchAllTodos(int id) {
     return (select(todos)..where((tbl) => tbl.taskId.equals(id))).watch();

@@ -46,10 +46,8 @@ class _TodoTileState extends State<TodoTile>
                 decoration: widget.todo.isDone
                     ? TextDecoration.lineThrough
                     : TextDecoration.none),
-            onEditingComplete: () {
-              db.updateTodo(
-                  widget.todo.copyWith(content: textEditingController.text));
-            },
+            onEditingComplete: () => db.updateTodo(
+                widget.todo.copyWith(content: textEditingController.text)),
             onSubmitted: (sd) {
               widget.focusNode.unfocus();
               db.updateTodo(
