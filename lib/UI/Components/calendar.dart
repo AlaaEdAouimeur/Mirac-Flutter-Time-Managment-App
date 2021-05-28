@@ -87,33 +87,50 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 return ListView(
                   primary: true,
                   children: [
-                    TableCalendar(
-                      locale: 'fr_FR',
-                      calendarFormat: calendarFormat,
-                      calendarBuilders: CalendarBuilders(),
-                      availableGestures: AvailableGestures.horizontalSwipe,
-                      dayHitTestBehavior: HitTestBehavior.deferToChild,
-                      firstDay: _firstDay,
-                      focusedDay: _focusedDay,
-                      lastDay: _lastDay,
-                      availableCalendarFormats: {
-                        CalendarFormat.week: 'Week',
-                        CalendarFormat.month: 'Month',
-                      },
-                      onDaySelected: _dateSelected,
-                      eventLoader: (df) {
-                        return _tasks
-                            .where((element) =>
-                                element.dueDate.day == df.day &&
-                                element.dueDate.month == df.month &&
-                                element.dueDate.year == df.year)
-                            .toList();
-                      },
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
-                      onFormatChanged: (newFormat) =>
-                          setState(() => calendarFormat = newFormat),
+                    Stack(
+                      children: [
+                        Container(
+                            height: 400,
+                            child: Opacity(
+                              child: Image.asset(
+                                'assets/bg.jpg',
+                                fit: BoxFit.fitHeight,
+                              ),
+                              opacity: 0.5,
+                            )),
+                        Opacity(
+                          opacity: 1,
+                          child: TableCalendar(
+                            locale: 'fr_FR',
+                            calendarFormat: calendarFormat,
+                            calendarBuilders: CalendarBuilders(),
+                            availableGestures:
+                                AvailableGestures.horizontalSwipe,
+                            dayHitTestBehavior: HitTestBehavior.deferToChild,
+                            firstDay: _firstDay,
+                            focusedDay: _focusedDay,
+                            lastDay: _lastDay,
+                            availableCalendarFormats: {
+                              CalendarFormat.week: 'Week',
+                              CalendarFormat.month: 'Month',
+                            },
+                            onDaySelected: _dateSelected,
+                            eventLoader: (df) {
+                              return _tasks
+                                  .where((element) =>
+                                      element.dueDate.day == df.day &&
+                                      element.dueDate.month == df.month &&
+                                      element.dueDate.year == df.year)
+                                  .toList();
+                            },
+                            selectedDayPredicate: (day) {
+                              return isSameDay(_selectedDay, day);
+                            },
+                            onFormatChanged: (newFormat) =>
+                                setState(() => calendarFormat = newFormat),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8.0),
 
