@@ -6,6 +6,7 @@ import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/Components/calendar.dart';
 import 'package:tyme/UI/pages/TasksHomePage.dart';
+import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,8 +31,8 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         backgroundColor: Colors.white,
         snakeViewColor: AppColors.trafficWhite,
-        selectedItemColor: AppColors.darkGrey,
-        unselectedItemColor: AppColors.bleuGrey,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: AppColors.darkGrey.withOpacity(0.6),
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _index,

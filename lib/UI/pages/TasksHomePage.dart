@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:tyme/UI/pages/CategoriesList.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
@@ -12,14 +13,12 @@ class TasksHomePage extends StatefulWidget {
 
 class _TasksHomePageState extends State<TasksHomePage> {
   int _chipIndex = -1;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildChips() {
+    return Row(
       children: [
         Container(
-          margin: EdgeInsets.all(8),
-          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.fromLTRB(8, 8, 0, 8),
+          width: MediaQuery.of(context).size.width - 55,
           height: 50,
           child: ListView.builder(
               itemCount: categories.length,
@@ -48,6 +47,30 @@ class _TasksHomePageState extends State<TasksHomePage> {
                     ),
                   )),
         ),
+        Expanded(
+            child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CategoriesList()));
+          },
+          child: Container(
+            height: 50,
+            child: Icon(
+              Icons.category,
+              color: AppColors.darkGrey,
+            ),
+          ),
+        ))
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildChips(),
         Divider(),
         Expanded(
           child: StreamBuilder(

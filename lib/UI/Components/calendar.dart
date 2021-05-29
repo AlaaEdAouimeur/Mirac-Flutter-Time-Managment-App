@@ -60,119 +60,121 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             title: 'title',
             category: 1,
             note: 'note',
-            dueDate: DateTime.now());
+            isDone: false,
+            dueDate: DateTime.now(),
+            reminderDate: DateTime.now());
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => TaskDetails(task: task)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, watch, child) {
-        return StreamBuilder<List<Task>>(
-            stream: db.watchAllTasks(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return SpinKitChasingDots(
-                  color: Colors.blue.shade900,
-                );
-              else if (snapshot.hasData) {
-                List<Task> _dayTasks = snapshot.data!
-                    .where((element) =>
-                        element.dueDate.day == _selectedDay.day &&
-                        element.dueDate.month == _selectedDay.month &&
-                        element.dueDate.year == _selectedDay.year)
-                    .toList();
-                List<Task> _tasks = snapshot.data ?? [];
-                return ListView(
-                  primary: true,
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                            height: 400,
-                            child: Opacity(
-                              child: Image.asset(
-                                'assets/bg.jpg',
-                                fit: BoxFit.fitHeight,
-                              ),
-                              opacity: 0.5,
-                            )),
-                        Opacity(
-                          opacity: 1,
-                          child: TableCalendar(
-                            locale: 'fr_FR',
-                            calendarFormat: calendarFormat,
-                            calendarBuilders: CalendarBuilders(),
-                            availableGestures:
-                                AvailableGestures.horizontalSwipe,
-                            dayHitTestBehavior: HitTestBehavior.deferToChild,
-                            firstDay: _firstDay,
-                            focusedDay: _focusedDay,
-                            lastDay: _lastDay,
-                            availableCalendarFormats: {
-                              CalendarFormat.week: 'Week',
-                              CalendarFormat.month: 'Month',
-                            },
-                            onDaySelected: _dateSelected,
-                            eventLoader: (df) {
-                              return _tasks
-                                  .where((element) =>
-                                      element.dueDate.day == df.day &&
-                                      element.dueDate.month == df.month &&
-                                      element.dueDate.year == df.year)
-                                  .toList();
-                            },
-                            selectedDayPredicate: (day) {
-                              return isSameDay(_selectedDay, day);
-                            },
-                            onFormatChanged: (newFormat) =>
-                                setState(() => calendarFormat = newFormat),
+    return Scaffold(
+      body: Consumer(
+        builder: (context, watch, child) {
+          return StreamBuilder<List<Task>>(
+              stream: db.watchAllTasks(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Task> _dayTasks = snapshot.data!
+                      .where((element) =>
+                          element.dueDate.day == _selectedDay.day &&
+                          element.dueDate.month == _selectedDay.month &&
+                          element.dueDate.year == _selectedDay.year)
+                      .toList();
+                  List<Task> _tasks = snapshot.data ?? [];
+                  return ListView(
+                    primary: true,
+                    children: [
+                      Stack(
+                        children: [
+                          Container(
+                              height: 400,
+                              child: Opacity(
+                                child: Image.asset(
+                                  'assets/bg.jpg',
+                                  fit: BoxFit.fitHeight,
+                                ),
+                                opacity: 0.5,
+                              )),
+                          Opacity(
+                            opacity: 1,
+                            child: TableCalendar(
+                              locale: 'fr_FR',
+                              calendarFormat: calendarFormat,
+                              calendarBuilders: CalendarBuilders(),
+                              availableGestures:
+                                  AvailableGestures.horizontalSwipe,
+                              dayHitTestBehavior: HitTestBehavior.deferToChild,
+                              firstDay: _firstDay,
+                              focusedDay: _focusedDay,
+                              lastDay: _lastDay,
+                              availableCalendarFormats: {
+                                CalendarFormat.week: 'Week',
+                                CalendarFormat.month: 'Month',
+                              },
+                              onDaySelected: _dateSelected,
+                              eventLoader: (df) {
+                                return _tasks
+                                    .where((element) =>
+                                        element.dueDate.day == df.day &&
+                                        element.dueDate.month == df.month &&
+                                        element.dueDate.year == df.year)
+                                    .toList();
+                              },
+                              selectedDayPredicate: (day) {
+                                return isSameDay(_selectedDay, day);
+                              },
+                              onFormatChanged: (newFormat) =>
+                                  setState(() => calendarFormat = newFormat),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
 
-                    //  initialData: initialData ,
+                      //  initialData: initialData ,
+                      /* if (snapshot.connectionState == ConnectionState.waiting)
+                        SpinKitChasingDots(
+                          color: Colors.blue.shade900,
+                        ),*/
+                      if (snapshot.hasError) Text('Error Try again'),
+                      if (snapshot.hasData)
+                        ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _dayTasks.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TaskTile(
+                                  task: _dayTasks[index],
+                                ),
+                              );
+                            })
+                      else if (snapshot.data!.isEmpty)
+                        Text('ADD A TASK')
+                      else
+                        Text('not'),
 
-                    if (snapshot.hasError) Text('Error Try again'),
-                    if (snapshot.hasData)
-                      ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: _dayTasks.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TaskTile(
-                                task: _dayTasks[index],
-                              ),
-                            );
-                          })
-                    else
-                      Text('not'),
-
-                    const SizedBox(height: 8.0),
-                    ElevatedButton(
-                        onPressed: () {
-                          _showBottomSheet(context);
-                          /*   db.insertC(CategoriesCompanion(
-                          content: Value('s'), color: Value(0xff)));
-                      /* TasksCompanion.insert(
-                          title: 'title',
-                          category: 0,
-                          note: 'note',
-                          dueDate: DateTime.now());*/
-                      db.getAllC().then((value) => print(value.length));*/
-                        }, //_showBottomSheet(context),
-                        child: Icon(Icons.add))
-                  ],
-                );
-              } else
-                return Text('not');
-            });
-      },
+                      const SizedBox(height: 8.0),
+                    ],
+                  );
+                } else
+                  return Text('not');
+              });
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _showBottomSheet(context);
+        },
+        child: Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+        backgroundColor: AppColors.trafficWhite,
+      ),
     );
   }
 }

@@ -33,22 +33,27 @@ List<Categorie> categories = [
   ),
   Categorie(
       color: Colors.amber.value,
-      id: 0,
+      id: 1,
       content: 'Famille',
       iconData: Icons.family_restroom.codePoint),
   Categorie(
       color: Colors.green.value,
-      id: 0,
+      id: 2,
       content: 'House',
       iconData: Icons.house.codePoint),
   Categorie(
       color: Colors.orange.value,
-      id: 0,
+      id: 3,
       content: 'Divertisement',
       iconData: Icons.local_play.codePoint),
   Categorie(
       color: Colors.grey.value,
-      id: 0,
+      id: 4,
       content: 'Studies',
       iconData: Icons.book.codePoint),
+  Categorie(
+      color: Colors.greenAccent.value,
+      id: 5,
+      content: 'Other',
+      iconData: Icons.bookmark_outline_sharp.codePoint),
 ];

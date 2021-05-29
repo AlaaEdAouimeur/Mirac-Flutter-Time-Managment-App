@@ -12,18 +12,23 @@ class Task extends DataClass implements Insertable<Task> {
   final String title;
   final int category;
   final String note;
+  final bool isDone;
   final DateTime dueDate;
+  final DateTime? reminderDate;
   Task(
       {required this.id,
       required this.title,
       required this.category,
       required this.note,
-      required this.dueDate});
+      required this.isDone,
+      required this.dueDate,
+      this.reminderDate});
   factory Task.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
+    final boolType = db.typeSystem.forDartType<bool>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Task(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
@@ -32,8 +37,12 @@ class Task extends DataClass implements Insertable<Task> {
       category:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}category'])!,
       note: stringType.mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
+      isDone:
+          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
       dueDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}due_date'])!,
+      reminderDate: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}reminder_date']),
     );
   }
   @override
@@ -43,7 +52,11 @@ class Task extends DataClass implements Insertable<Task> {
     map['title'] = Variable<String>(title);
     map['category'] = Variable<int>(category);
     map['note'] = Variable<String>(note);
+    map['is_done'] = Variable<bool>(isDone);
     map['due_date'] = Variable<DateTime>(dueDate);
+    if (!nullToAbsent || reminderDate != null) {
+      map['reminder_date'] = Variable<DateTime?>(reminderDate);
+    }
     return map;
   }
 
@@ -53,7 +66,11 @@ class Task extends DataClass implements Insertable<Task> {
       title: Value(title),
       category: Value(category),
       note: Value(note),
+      isDone: Value(isDone),
       dueDate: Value(dueDate),
+      reminderDate: reminderDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reminderDate),
     );
   }
 
@@ -65,7 +82,9 @@ class Task extends DataClass implements Insertable<Task> {
       title: serializer.fromJson<String>(json['title']),
       category: serializer.fromJson<int>(json['category']),
       note: serializer.fromJson<String>(json['note']),
+      isDone: serializer.fromJson<bool>(json['isDone']),
       dueDate: serializer.fromJson<DateTime>(json['dueDate']),
+      reminderDate: serializer.fromJson<DateTime?>(json['reminderDate']),
     );
   }
   @override
@@ -76,7 +95,9 @@ class Task extends DataClass implements Insertable<Task> {
       'title': serializer.toJson<String>(title),
       'category': serializer.toJson<int>(category),
       'note': serializer.toJson<String>(note),
+      'isDone': serializer.toJson<bool>(isDone),
       'dueDate': serializer.toJson<DateTime>(dueDate),
+      'reminderDate': serializer.toJson<DateTime?>(reminderDate),
     };
   }
 
@@ -85,13 +106,17 @@ class Task extends DataClass implements Insertable<Task> {
           String? title,
           int? category,
           String? note,
-          DateTime? dueDate}) =>
+          bool? isDone,
+          DateTime? dueDate,
+          DateTime? reminderDate}) =>
       Task(
         id: id ?? this.id,
         title: title ?? this.title,
         category: category ?? this.category,
         note: note ?? this.note,
+        isDone: isDone ?? this.isDone,
         dueDate: dueDate ?? this.dueDate,
+        reminderDate: reminderDate ?? this.reminderDate,
       );
   @override
   String toString() {
@@ -100,7 +125,9 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('title: $title, ')
           ..write('category: $category, ')
           ..write('note: $note, ')
-          ..write('dueDate: $dueDate')
+          ..write('isDone: $isDone, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('reminderDate: $reminderDate')
           ..write(')'))
         .toString();
   }
@@ -108,8 +135,14 @@ class Task extends DataClass implements Insertable<Task> {
   @override
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
-      $mrjc(title.hashCode,
-          $mrjc(category.hashCode, $mrjc(note.hashCode, dueDate.hashCode)))));
+      $mrjc(
+          title.hashCode,
+          $mrjc(
+              category.hashCode,
+              $mrjc(
+                  note.hashCode,
+                  $mrjc(isDone.hashCode,
+                      $mrjc(dueDate.hashCode, reminderDate.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -118,7 +151,9 @@ class Task extends DataClass implements Insertable<Task> {
           other.title == this.title &&
           other.category == this.category &&
           other.note == this.note &&
-          other.dueDate == this.dueDate);
+          other.isDone == this.isDone &&
+          other.dueDate == this.dueDate &&
+          other.reminderDate == this.reminderDate);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
@@ -126,21 +161,27 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String> title;
   final Value<int> category;
   final Value<String> note;
+  final Value<bool> isDone;
   final Value<DateTime> dueDate;
+  final Value<DateTime?> reminderDate;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
     this.category = const Value.absent(),
     this.note = const Value.absent(),
+    this.isDone = const Value.absent(),
     this.dueDate = const Value.absent(),
+    this.reminderDate = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
     required int category,
     required String note,
+    this.isDone = const Value.absent(),
     required DateTime dueDate,
-  })   : title = Value(title),
+    this.reminderDate = const Value.absent(),
+  })  : title = Value(title),
         category = Value(category),
         note = Value(note),
         dueDate = Value(dueDate);
@@ -149,14 +190,18 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<String>? title,
     Expression<int>? category,
     Expression<String>? note,
+    Expression<bool>? isDone,
     Expression<DateTime>? dueDate,
+    Expression<DateTime?>? reminderDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (title != null) 'title': title,
       if (category != null) 'category': category,
       if (note != null) 'note': note,
+      if (isDone != null) 'is_done': isDone,
       if (dueDate != null) 'due_date': dueDate,
+      if (reminderDate != null) 'reminder_date': reminderDate,
     });
   }
 
@@ -165,13 +210,17 @@ class TasksCompanion extends UpdateCompanion<Task> {
       Value<String>? title,
       Value<int>? category,
       Value<String>? note,
-      Value<DateTime>? dueDate}) {
+      Value<bool>? isDone,
+      Value<DateTime>? dueDate,
+      Value<DateTime?>? reminderDate}) {
     return TasksCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
       category: category ?? this.category,
       note: note ?? this.note,
+      isDone: isDone ?? this.isDone,
       dueDate: dueDate ?? this.dueDate,
+      reminderDate: reminderDate ?? this.reminderDate,
     );
   }
 
@@ -190,8 +239,14 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (note.present) {
       map['note'] = Variable<String>(note.value);
     }
+    if (isDone.present) {
+      map['is_done'] = Variable<bool>(isDone.value);
+    }
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (reminderDate.present) {
+      map['reminder_date'] = Variable<DateTime?>(reminderDate.value);
     }
     return map;
   }
@@ -203,7 +258,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('title: $title, ')
           ..write('category: $category, ')
           ..write('note: $note, ')
-          ..write('dueDate: $dueDate')
+          ..write('isDone: $isDone, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('reminderDate: $reminderDate')
           ..write(')'))
         .toString();
   }
@@ -248,6 +305,14 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     );
   }
 
+  final VerificationMeta _isDoneMeta = const VerificationMeta('isDone');
+  @override
+  late final GeneratedBoolColumn isDone = _constructIsDone();
+  GeneratedBoolColumn _constructIsDone() {
+    return GeneratedBoolColumn('is_done', $tableName, false,
+        defaultValue: Constant(false));
+  }
+
   final VerificationMeta _dueDateMeta = const VerificationMeta('dueDate');
   @override
   late final GeneratedDateTimeColumn dueDate = _constructDueDate();
@@ -259,8 +324,21 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     );
   }
 
+  final VerificationMeta _reminderDateMeta =
+      const VerificationMeta('reminderDate');
   @override
-  List<GeneratedColumn> get $columns => [id, title, category, note, dueDate];
+  late final GeneratedDateTimeColumn reminderDate = _constructReminderDate();
+  GeneratedDateTimeColumn _constructReminderDate() {
+    return GeneratedDateTimeColumn(
+      'reminder_date',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, category, note, isDone, dueDate, reminderDate];
   @override
   $TasksTable get asDslTable => this;
   @override
@@ -293,11 +371,21 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     } else if (isInserting) {
       context.missing(_noteMeta);
     }
+    if (data.containsKey('is_done')) {
+      context.handle(_isDoneMeta,
+          isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
+    }
     if (data.containsKey('due_date')) {
       context.handle(_dueDateMeta,
           dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
     } else if (isInserting) {
       context.missing(_dueDateMeta);
+    }
+    if (data.containsKey('reminder_date')) {
+      context.handle(
+          _reminderDateMeta,
+          reminderDate.isAcceptableOrUnknown(
+              data['reminder_date']!, _reminderDateMeta));
     }
     return context;
   }

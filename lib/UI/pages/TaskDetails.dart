@@ -32,6 +32,7 @@ class _TaskDetailsState extends State<TaskDetails>
   bool firstLoaded = true;
   @override
   void initState() {
+    textEditingController.text = widget.task.note;
     _selectedDateTime = widget.task.dueDate;
     _selectedDayTime = TimeOfDay.now();
     super.initState();
@@ -147,14 +148,45 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
+  TextEditingController textEditingController = new TextEditingController();
+  Widget _noteWidget() {
+    return Column(
+      children: [
+        Container(
+            padding: EdgeInsets.all(8),
+            margin: EdgeInsets.all(8),
+            height: 150,
+            child: TextField(
+              controller: textEditingController,
+              decoration: InputDecoration(
+                  focusColor: Colors.blue,
+                  hintText: 'Enter your notes here',
+                  icon: Icon(Icons.note),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
+                  fillColor: Colors.white,
+                  filled: true),
+              maxLines: 8,
+            )),
+      ],
+    );
+  }
+
   Widget _reminderWidget() {
     return InkWell(
       onTap: () async {
         _selectedDayTime = await showTimePicker(
                 context: context, initialTime: _selectedDayTime) ??
             _selectedDayTime;
-        setState(() {});
-        //TODO ADD REMINDERS      db.updateTask(task)
+        setState(() {
+          DateTime temp = DateTime(kToday.year, kToday.month, kToday.day,
+              _selectedDayTime.hour, _selectedDayTime.minute);
+
+          db.updateTask(widget.task.copyWith(reminderDate: temp));
+        });
       },
       child: Column(
         children: [
@@ -169,7 +201,11 @@ class _TaskDetailsState extends State<TaskDetails>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    _selectedDayTime.format(context),
+                    widget.task.reminderDate == null
+                        ? _selectedDayTime.format(context)
+                        : DateFormat(DateFormat.HOUR24_MINUTE).format(
+                            widget.task.reminderDate ?? DateTime.now(),
+                          ),
                     style: TextStyle(color: AppColors.darkGrey),
                   ),
                 ),
@@ -178,51 +214,6 @@ class _TaskDetailsState extends State<TaskDetails>
           ),
         ],
       ),
-    );
-  }
-
-  Widget _headerWidget() {
-    print(categories);
-    return Column(
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-      children: [
-        DropdownButton<Categorie>(
-          value: _selectedCategory,
-          onChanged: (cate) {},
-          items: [
-            ...categories
-                .map((e) => DropdownMenuItem<Categorie>(
-                      child: Container(
-                        height: 70,
-                        width: 80,
-                        child: ListTile(
-                          contentPadding:
-                              const EdgeInsets.symmetric(horizontal: 10),
-                          leading: Icon(
-                            IconData(e.iconData, fontFamily: 'MaterialIcons'),
-                            color: Colors.black,
-                          ),
-                          title: Text(e.content),
-                        ),
-                      ),
-                    ))
-                .toList(),
-          ],
-        ),
-        /*_dateWidget(),
-        Container(
-          padding: EdgeInsets.all(8),
-          //  color: Colors.red,
-          child: Text(
-            DateFormat(DateFormat.DAY).format(kToday),
-            style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w500,
-                fontStyle: FontStyle.italic),
-          ),
-        )*/
-      ],
     );
   }
 
@@ -367,6 +358,7 @@ class _TaskDetailsState extends State<TaskDetails>
               Divider(color: AppColors.bleuGrey),
               _reminderWidget(),
               Divider(color: AppColors.bleuGrey),
+              _noteWidget()
             ],
           ),
         ),
@@ -380,6 +372,7 @@ class _TaskDetailsState extends State<TaskDetails>
 
   @override
   void dispose() {
+    db.updateTask(widget.task.copyWith(note: textEditingController.text));
     _nodes.forEach((element) {
       element.dispose();
     });

@@ -1,5 +1,6 @@
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
+import 'package:tyme/utils/konstants.dart' as K;
 
 part 'database.g.dart';
 
@@ -10,7 +11,9 @@ class Tasks extends Table {
   IntColumn get category =>
       integer().customConstraint('NULL REFERENCES categories(id)')();
   TextColumn get note => text()();
+  BoolColumn get isDone => boolean().withDefault(Constant(false))();
   DateTimeColumn get dueDate => dateTime()();
+  DateTimeColumn get reminderDate => dateTime().nullable()();
 }
 
 class Todos extends Table {
@@ -73,4 +76,10 @@ class AppDatabase extends _$AppDatabase {
   Future getAllC() => select(categories).get();
   Future deleteTodo(Todo todo) => delete(todos).delete(todo);
   void insertCategories(Categorie c) => into(categories).insert(c);
+  Future<List<Categorie>> getCategories() => select(categories).get();
+  void deleteCategory(Categorie c) async {
+    delete(categories).delete(c);
+    delete(tasks).where((tbl) => tbl.category.equals(c.id));
+    K.categories = await getCategories();
+  }
 }

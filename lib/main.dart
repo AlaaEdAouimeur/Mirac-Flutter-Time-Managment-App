@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
+import 'package:tyme/utils/konstants.dart';
 
 void main() {
   initializeDateFormatting('fr_FR', null).then((_) => runApp(ProviderScope(
@@ -20,8 +21,8 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.amber,
-        ),
+            // primarySwatch: Colors.amber,
+            ),
         home: SafeArea(child: Material(child: HomePage())));
   }
 }

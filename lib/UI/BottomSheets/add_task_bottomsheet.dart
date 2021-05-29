@@ -211,11 +211,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         _selectedTimeOfDay.minute);
 
                     db
-                        .insertTask(TasksCompanion.insert(
+                        .insertTask(
+                          TasksCompanion.insert(
                             title: titleTextEditingController.text,
                             category: _selectedCategoryIndex,
                             note: noteTextEditingController.text,
-                            dueDate: _taskDate))
+                            dueDate: _taskDate,
+                          ),
+                        )
                         .then((value) => db
                             .getTask(value)
                             .then((task) => Navigator.of(context).pop(task)));
