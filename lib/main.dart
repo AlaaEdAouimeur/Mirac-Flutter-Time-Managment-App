@@ -21,8 +21,8 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-            // primarySwatch: Colors.amber,
-            ),
+          primarySwatch: Colors.amber,
+        ),
         home: SafeArea(child: Material(child: HomePage())));
   }
 }

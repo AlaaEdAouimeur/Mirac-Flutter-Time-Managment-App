@@ -35,6 +35,8 @@ dependencies:
   intl: ^0.17.0
   moor: ^4.2.1
   moor_flutter: ^4.0.0
+  flutter_local_notifications:
+
   syncfusion_flutter_calendar: ^19.1.56
   table_calendar: ^3.0.0
 
@@ -42,7 +44,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: null
-  moor_generator: ^4.2.2
+ 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -55,7 +57,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/
+    - assets/
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

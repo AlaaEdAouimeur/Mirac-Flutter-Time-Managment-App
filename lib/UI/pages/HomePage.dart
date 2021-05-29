@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 import 'package:table_calendar/table_calendar.dart';
@@ -15,9 +16,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      new FlutterLocalNotificationsPlugin();
   @override
   void initState() {
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('tom');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
     super.initState();
+  }
+
+  Future _showNotification() async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.max, priority: Priority.high);
+    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+    var platformChannelSpecifics = new NotificationDetails(
+        android: androidPlatformChannelSpecifics,
+        iOS: iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      'New Notification',
+      'Flutter is awesome',
+      platformChannelSpecifics,
+      payload: 'This is notification detail Text...',
+    );
+  }
+
+  Future onSelectNotification(String? payload) async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return new AlertDialog(
+          title: Text("Your Notification Detail"),
+          content: Text("Payload : $payload"),
+        );
+      },
+    );
   }
 
   int _index = 0;
@@ -37,6 +77,7 @@ class _HomePageState extends State<HomePage> {
         showUnselectedLabels: true,
         currentIndex: _index,
         onTap: (i) {
+          _showNotification();
           setState(() {
             _index = i;
           });
