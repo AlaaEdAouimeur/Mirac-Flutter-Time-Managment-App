@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tyme/UI/Components/TodoTile.dart';
+import 'package:tyme/UI/pages/HomePage.dart';
 
 import 'package:tyme/database/database.dart';
 import 'package:tyme/database/database.dart';
@@ -25,7 +26,7 @@ class _TaskDetailsState extends State<TaskDetails>
     with SingleTickerProviderStateMixin {
   List<FocusNode> _nodes = [];
   late DateTime _selectedDateTime;
-  late TimeOfDay _selectedDayTime;
+  TimeOfDay? _selectedDayTime;
   AnimateIconController controller = AnimateIconController();
   bool isPlaying = false;
   Categorie? _selectedCategory;
@@ -34,7 +35,7 @@ class _TaskDetailsState extends State<TaskDetails>
   void initState() {
     textEditingController.text = widget.task.note;
     _selectedDateTime = widget.task.dueDate;
-    _selectedDayTime = TimeOfDay.now();
+    _selectedDayTime = TimeOfDay.fromDateTime(widget.task.dueDate);
     super.initState();
   }
 
@@ -179,13 +180,33 @@ class _TaskDetailsState extends State<TaskDetails>
     return InkWell(
       onTap: () async {
         _selectedDayTime = await showTimePicker(
-                context: context, initialTime: _selectedDayTime) ??
-            _selectedDayTime;
+          builder: (context, timePicker) => Column(
+            children: [
+              timePicker ?? Container(),
+              ElevatedButton(
+                  onPressed: () {
+                    _selectedDayTime = null;
+                    Navigator.pop(context);
+                  },
+                  child: Text('No reminders'))
+            ],
+          ),
+          context: context,
+          initialTime: _selectedDayTime ?? TimeOfDay.now(),
+        );
         setState(() {
-          DateTime temp = DateTime(kToday.year, kToday.month, kToday.day,
-              _selectedDayTime.hour, _selectedDayTime.minute);
-
-          db.updateTask(widget.task.copyWith(reminderDate: temp));
+          if (_selectedDayTime == null) {
+            db.updateTask(widget.task.copyWith(reminderDate: null));
+            appNotifications.cancelAllNotifications(widget.task.id);
+          } else {
+            setState(() {
+              DateTime temp = DateTime(kToday.year, kToday.month, kToday.day,
+                  _selectedDayTime!.hour, _selectedDayTime!.minute);
+              db.updateTask(widget.task.copyWith(reminderDate: temp)).then(
+                  (value) => appNotifications.scheduleNotification(
+                      widget.task.copyWith(reminderDate: temp)));
+            });
+          }
         });
       },
       child: Column(
@@ -201,11 +222,9 @@ class _TaskDetailsState extends State<TaskDetails>
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    widget.task.reminderDate == null
-                        ? _selectedDayTime.format(context)
-                        : DateFormat(DateFormat.HOUR24_MINUTE).format(
-                            widget.task.reminderDate ?? DateTime.now(),
-                          ),
+                    _selectedDayTime == null
+                        ? 'No Reminder'
+                        : _selectedDayTime!.format(context),
                     style: TextStyle(color: AppColors.darkGrey),
                   ),
                 ),

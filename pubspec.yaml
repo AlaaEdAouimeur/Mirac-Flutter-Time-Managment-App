@@ -27,6 +27,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   custom_pop_up_menu: ^1.2.0
   equatable: ^2.0.0
+  flutter_local_notifications: null
   flutter_riverpod: ^0.14.0+2
   flutter_snake_navigationbar: ^0.5.0
   flutter_spinkit: ^5.0.0
@@ -35,16 +36,14 @@ dependencies:
   intl: ^0.17.0
   moor: ^4.2.1
   moor_flutter: ^4.0.0
-  flutter_local_notifications:
-
   syncfusion_flutter_calendar: ^19.1.56
   table_calendar: ^3.0.0
+  timezone: ^0.7.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: null
- 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

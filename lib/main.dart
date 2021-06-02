@@ -5,14 +5,19 @@ import 'package:tyme/UI/pages/HomePage.dart';
 import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/konstants.dart';
+import 'package:tyme/utils/local_notifications.dart';
 
 void main() {
-  initializeDateFormatting('fr_FR', null).then((_) => runApp(ProviderScope(
-        child: MyApp(),
-      )));
+  initializeDateFormatting('fr_FR', null).then((_) {
+    runApp(ProviderScope(
+      child: MyApp(),
+    ));
+    appNotifications.initPlugin();
+  });
 }
 
 AppDatabase db = new AppDatabase();
+AppNotifications appNotifications = new AppNotifications();
 
 class MyApp extends ConsumerWidget {
   @override
