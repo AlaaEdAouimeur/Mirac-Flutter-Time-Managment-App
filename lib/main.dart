@@ -4,6 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
+import 'package:tyme/utils/global_vars.dart';
 import 'package:tyme/utils/konstants.dart';
 import 'package:tyme/utils/local_notifications.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     return MaterialApp(
+        navigatorKey: GlobalVariable.navState,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(

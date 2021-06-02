@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
+import 'package:tyme/utils/global_vars.dart';
 
 class AppNotifications {
   late var zone;
@@ -47,6 +51,7 @@ class AppNotifications {
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.wallClockTime,
         androidAllowWhileIdle: true,
+        payload: task.toJsonString(),
         matchDateTimeComponents: DateTimeComponents.time);
   }
 
@@ -59,6 +64,7 @@ class AppNotifications {
   }
 
   Future onSelectNotification(String? payload) async {
-    print("Payload : $payload");
+    final Task _task = Task.fromJson(jsonDecode(payload ?? ''));
+    Navigator.of(GlobalVariable.navState.currentContext!).push(MaterialPageRoute(builder: (context) => TaskDetails(task: _task)));
   }
 }
