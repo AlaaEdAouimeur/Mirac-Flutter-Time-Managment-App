@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:tyme/database/database.dart';
 
+List<ItemModel> items = [
+  ItemModel(title: 'Mark as done', icondata: Icons.check),
+  ItemModel(title: 'Mark as done', icondata: Icons.check),
+];
 const List<Color> colorsList = [
   Colors.red,
   Colors.amber,
@@ -57,3 +62,12 @@ List<Categorie> categories = [
       content: 'Other',
       iconData: Icons.bookmark_outline_sharp.codePoint),
 ];
+
+class ItemModel {
+  String title;
+  IconData icondata;
+  ItemModel({
+    required this.title,
+    required this.icondata,
+  });
+}

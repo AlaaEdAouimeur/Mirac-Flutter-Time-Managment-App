@@ -31,8 +31,10 @@ class _TaskDetailsState extends State<TaskDetails>
   bool isPlaying = false;
   Categorie? _selectedCategory;
   bool firstLoaded = true;
+  late bool isDone;
   @override
   void initState() {
+    isDone = widget.task.isDone;
     textEditingController.text = widget.task.note;
     _selectedDateTime = widget.task.dueDate;
     _selectedDayTime = TimeOfDay.fromDateTime(widget.task.dueDate);
@@ -176,6 +178,37 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
+  Widget _menuItem(String name, IconData iconData, VoidCallback _onTap) {
+    return InkWell(
+      onTap: () {
+        _onTap();
+        _controller.hideMenu();
+      },
+      child: Row(
+        children: <Widget>[
+          Icon(
+            iconData,
+            size: 15,
+            color: Colors.black,
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: Text(
+                name,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _reminderWidget() {
     return InkWell(
       onTap: () async {
@@ -258,46 +291,28 @@ class _TaskDetailsState extends State<TaskDetails>
                 borderRadius: BorderRadius.circular(5),
                 child: Container(
                   color: AppColors.trafficWhite,
-                  child: IntrinsicWidth(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            _controller.hideMenu();
-                            db.deleteTask(widget.task);
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            height: 40,
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Row(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.delete,
-                                  size: 15,
-                                  color: Colors.black,
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    padding: EdgeInsets.symmetric(vertical: 10),
-                                    child: Text(
-                                      'Delete',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  width: 160,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                          height: 80,
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            children: [
+                              _menuItem(
+                                  isDone ? 'Mark as Undone' : 'Mark as Done',
+                                  Icons.check, () {
+                                isDone = !isDone;
+                                db.updateTask(
+                                    widget.task.copyWith(isDone: isDone));
+                              }),
+                              _menuItem('Delete', Icons.delete, () {
+                                db.deleteTask(widget.task);
+                              })
+                            ],
+                          )),
+                    ],
                   ),
                 ),
               ),
@@ -308,77 +323,84 @@ class _TaskDetailsState extends State<TaskDetails>
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              //  _headerWidget(),
-              Container(
-                padding: const EdgeInsets.all(0.0),
-                child: StreamBuilder(
-                  stream: db.watchAllTodos(widget.task.id),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.hasData) {
-                      lastitem = snapshot.data.length;
-                      getNodesNeeded();
-                      handleFocus();
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white.withOpacity(0.5),
+        child: AbsorbPointer(
+          absorbing: isDone,
+          child: Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  //  _headerWidget(),
+                  Container(
+                    padding: const EdgeInsets.all(0.0),
+                    child: StreamBuilder(
+                      stream: db.watchAllTodos(widget.task.id),
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasData) {
+                          lastitem = snapshot.data.length;
+                          getNodesNeeded();
+                          handleFocus();
 
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            return TodoTile(
-                                todo: snapshot.data[index],
-                                focusNode: _nodes[index],
-                                onPressed: () {
-                                  Todo todo = snapshot.data[index];
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                return TodoTile(
+                                    todo: snapshot.data[index],
+                                    focusNode: _nodes[index],
+                                    onPressed: () {
+                                      Todo todo = snapshot.data[index];
 
-                                  db.updateTodo(
-                                      todo.copyWith(isDone: !todo.isDone));
-                                });
-                          });
-                    } else
-                      return Text('sad');
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: InkWell(
-                  onTap: () {
-                    firstLoaded = false;
-                    db.insertTodo(TodosCompanion.insert(
-                        content: '', taskId: widget.task.id));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: Colors.blue,
-                      ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        'Add Sub-task',
-                        style: TextStyle(color: Colors.blue),
-                      )
-                    ],
+                                      db.updateTodo(
+                                          todo.copyWith(isDone: !todo.isDone));
+                                    });
+                              });
+                        } else
+                          return Text('sad');
+                      },
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap: () {
+                        firstLoaded = false;
+                        db.insertTodo(TodosCompanion.insert(
+                            content: '', taskId: widget.task.id));
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: Colors.blue,
+                          ),
+                          SizedBox(
+                            width: 16,
+                          ),
+                          Text(
+                            'Add Sub-task',
+                            style: TextStyle(color: Colors.blue),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8,
+                  ),
+                  Divider(color: AppColors.bleuGrey),
+                  _dueDateWidget(),
+                  Divider(color: AppColors.bleuGrey),
+                  _reminderWidget(),
+                  Divider(color: AppColors.bleuGrey),
+                  _noteWidget()
+                ],
               ),
-              SizedBox(
-                height: 8,
-              ),
-              Divider(color: AppColors.bleuGrey),
-              _dueDateWidget(),
-              Divider(color: AppColors.bleuGrey),
-              _reminderWidget(),
-              Divider(color: AppColors.bleuGrey),
-              _noteWidget()
-            ],
+            ),
           ),
         ),
       ),
@@ -391,6 +413,7 @@ class _TaskDetailsState extends State<TaskDetails>
 
   @override
   void dispose() {
+    _controller.dispose();
     db.updateTask(widget.task.copyWith(note: textEditingController.text));
     _nodes.forEach((element) {
       element.dispose();

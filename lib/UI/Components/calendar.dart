@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:moor/moor.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/BottomSheets/add_task_bottomsheet.dart';
@@ -89,7 +90,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       Stack(
                         children: [
                           Container(
-                              height: 400,
+                              height: 350,
                               child: Opacity(
                                 child: Image.asset(
                                   'assets/bg.jpg',
@@ -101,6 +102,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                             opacity: 1,
                             child: TableCalendar(
                               locale: 'fr_FR',
+                              headerStyle: HeaderStyle(
+                                  titleTextFormatter: (date, local) =>
+                                      DateFormat(DateFormat.YEAR_MONTH)
+                                          .format(date),
+                                  titleTextStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20)),
+                              calendarStyle: CalendarStyle(
+                                  holidayTextStyle:
+                                      TextStyle(fontWeight: FontWeight.bold),
+                                  defaultTextStyle:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                               calendarFormat: calendarFormat,
                               calendarBuilders: CalendarBuilders(),
                               availableGestures:
@@ -110,7 +123,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               focusedDay: _focusedDay,
                               lastDay: _lastDay,
                               availableCalendarFormats: {
-                                CalendarFormat.week: 'Week',
                                 CalendarFormat.month: 'Month',
                               },
                               onDaySelected: _dateSelected,
@@ -125,8 +137,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               selectedDayPredicate: (day) {
                                 return isSameDay(_selectedDay, day);
                               },
-                              onFormatChanged: (newFormat) =>
-                                  setState(() => calendarFormat = newFormat),
                             ),
                           ),
                         ],
