@@ -39,11 +39,13 @@ dependencies:
   syncfusion_flutter_calendar: ^19.1.56
   table_calendar: ^3.0.0
   timezone: ^0.7.0
+  fl_chart: ^0.36.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: null
+  build_runner:
+  moor_generator: 
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

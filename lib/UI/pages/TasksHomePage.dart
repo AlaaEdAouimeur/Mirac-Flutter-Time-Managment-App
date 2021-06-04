@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tyme/UI/pages/CategoriesList.dart';
+import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
@@ -86,17 +87,27 @@ class _TasksHomePageState extends State<TasksHomePage> {
                   return ListView.builder(
                     itemCount: _tasks.length,
                     itemBuilder: (context, i) {
-                      return Card(
-                        margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                        elevation: 0,
-                        color: AppColors.trafficWhite,
-                        child: ListTile(
-                          leading: Checkbox(
-                            activeColor: AppColors.darkGrey,
-                            value: true,
-                            onChanged: (f) {},
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => TaskDetails(
+                                    task: _tasks[i],
+                                  )));
+                        },
+                        child: Card(
+                          margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          elevation: 0,
+                          color: AppColors.trafficWhite,
+                          child: ListTile(
+                            leading: Checkbox(
+                              activeColor: AppColors.darkGrey,
+                              value: _tasks[i].isDone,
+                              onChanged: (f) {
+                                db.updateTask(_tasks[i].copyWith(isDone: f));
+                              },
+                            ),
+                            title: Text(_tasks[i].title),
                           ),
-                          title: Text(_tasks[i].title),
                         ),
                       );
                     },

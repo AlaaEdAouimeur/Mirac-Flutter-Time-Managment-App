@@ -7,6 +7,498 @@ part of 'database.dart';
 // **************************************************************************
 
 // ignore_for_file: unnecessary_brace_in_string_interps, unnecessary_this
+class PastTask extends DataClass implements Insertable<PastTask> {
+  final int id;
+  final DateTime dateFinished;
+  PastTask({required this.id, required this.dateFinished});
+  factory PastTask.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return PastTask(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      dateFinished: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}date_finished'])!,
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['date_finished'] = Variable<DateTime>(dateFinished);
+    return map;
+  }
+
+  PastTasksCompanion toCompanion(bool nullToAbsent) {
+    return PastTasksCompanion(
+      id: Value(id),
+      dateFinished: Value(dateFinished),
+    );
+  }
+
+  factory PastTask.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return PastTask(
+      id: serializer.fromJson<int>(json['id']),
+      dateFinished: serializer.fromJson<DateTime>(json['dateFinished']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'dateFinished': serializer.toJson<DateTime>(dateFinished),
+    };
+  }
+
+  PastTask copyWith({int? id, DateTime? dateFinished}) => PastTask(
+        id: id ?? this.id,
+        dateFinished: dateFinished ?? this.dateFinished,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('PastTask(')
+          ..write('id: $id, ')
+          ..write('dateFinished: $dateFinished')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode, dateFinished.hashCode));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is PastTask &&
+          other.id == this.id &&
+          other.dateFinished == this.dateFinished);
+}
+
+class PastTasksCompanion extends UpdateCompanion<PastTask> {
+  final Value<int> id;
+  final Value<DateTime> dateFinished;
+  const PastTasksCompanion({
+    this.id = const Value.absent(),
+    this.dateFinished = const Value.absent(),
+  });
+  PastTasksCompanion.insert({
+    this.id = const Value.absent(),
+    required DateTime dateFinished,
+  }) : dateFinished = Value(dateFinished);
+  static Insertable<PastTask> custom({
+    Expression<int>? id,
+    Expression<DateTime>? dateFinished,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (dateFinished != null) 'date_finished': dateFinished,
+    });
+  }
+
+  PastTasksCompanion copyWith({Value<int>? id, Value<DateTime>? dateFinished}) {
+    return PastTasksCompanion(
+      id: id ?? this.id,
+      dateFinished: dateFinished ?? this.dateFinished,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (dateFinished.present) {
+      map['date_finished'] = Variable<DateTime>(dateFinished.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PastTasksCompanion(')
+          ..write('id: $id, ')
+          ..write('dateFinished: $dateFinished')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PastTasksTable extends PastTasks
+    with TableInfo<$PastTasksTable, PastTask> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $PastTasksTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedIntColumn id = _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _dateFinishedMeta =
+      const VerificationMeta('dateFinished');
+  @override
+  late final GeneratedDateTimeColumn dateFinished = _constructDateFinished();
+  GeneratedDateTimeColumn _constructDateFinished() {
+    return GeneratedDateTimeColumn(
+      'date_finished',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, dateFinished];
+  @override
+  $PastTasksTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'past_tasks';
+  @override
+  final String actualTableName = 'past_tasks';
+  @override
+  VerificationContext validateIntegrity(Insertable<PastTask> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('date_finished')) {
+      context.handle(
+          _dateFinishedMeta,
+          dateFinished.isAcceptableOrUnknown(
+              data['date_finished']!, _dateFinishedMeta));
+    } else if (isInserting) {
+      context.missing(_dateFinishedMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PastTask map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return PastTask.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $PastTasksTable createAlias(String alias) {
+    return $PastTasksTable(_db, alias);
+  }
+}
+
+class User extends DataClass implements Insertable<User> {
+  final int id;
+  final String firstName;
+  final String lastName;
+  final int completedTasks;
+  final int pendingTasks;
+  User(
+      {required this.id,
+      required this.firstName,
+      required this.lastName,
+      required this.completedTasks,
+      required this.pendingTasks});
+  factory User.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    return User(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      firstName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}first_name'])!,
+      lastName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_name'])!,
+      completedTasks: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}completed_tasks'])!,
+      pendingTasks: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}pending_tasks'])!,
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['first_name'] = Variable<String>(firstName);
+    map['last_name'] = Variable<String>(lastName);
+    map['completed_tasks'] = Variable<int>(completedTasks);
+    map['pending_tasks'] = Variable<int>(pendingTasks);
+    return map;
+  }
+
+  UsersCompanion toCompanion(bool nullToAbsent) {
+    return UsersCompanion(
+      id: Value(id),
+      firstName: Value(firstName),
+      lastName: Value(lastName),
+      completedTasks: Value(completedTasks),
+      pendingTasks: Value(pendingTasks),
+    );
+  }
+
+  factory User.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return User(
+      id: serializer.fromJson<int>(json['id']),
+      firstName: serializer.fromJson<String>(json['firstName']),
+      lastName: serializer.fromJson<String>(json['lastName']),
+      completedTasks: serializer.fromJson<int>(json['completedTasks']),
+      pendingTasks: serializer.fromJson<int>(json['pendingTasks']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'firstName': serializer.toJson<String>(firstName),
+      'lastName': serializer.toJson<String>(lastName),
+      'completedTasks': serializer.toJson<int>(completedTasks),
+      'pendingTasks': serializer.toJson<int>(pendingTasks),
+    };
+  }
+
+  User copyWith(
+          {int? id,
+          String? firstName,
+          String? lastName,
+          int? completedTasks,
+          int? pendingTasks}) =>
+      User(
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        completedTasks: completedTasks ?? this.completedTasks,
+        pendingTasks: pendingTasks ?? this.pendingTasks,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('User(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('completedTasks: $completedTasks, ')
+          ..write('pendingTasks: $pendingTasks')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          firstName.hashCode,
+          $mrjc(lastName.hashCode,
+              $mrjc(completedTasks.hashCode, pendingTasks.hashCode)))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is User &&
+          other.id == this.id &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.completedTasks == this.completedTasks &&
+          other.pendingTasks == this.pendingTasks);
+}
+
+class UsersCompanion extends UpdateCompanion<User> {
+  final Value<int> id;
+  final Value<String> firstName;
+  final Value<String> lastName;
+  final Value<int> completedTasks;
+  final Value<int> pendingTasks;
+  const UsersCompanion({
+    this.id = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.completedTasks = const Value.absent(),
+    this.pendingTasks = const Value.absent(),
+  });
+  UsersCompanion.insert({
+    this.id = const Value.absent(),
+    required String firstName,
+    required String lastName,
+    this.completedTasks = const Value.absent(),
+    this.pendingTasks = const Value.absent(),
+  })  : firstName = Value(firstName),
+        lastName = Value(lastName);
+  static Insertable<User> custom({
+    Expression<int>? id,
+    Expression<String>? firstName,
+    Expression<String>? lastName,
+    Expression<int>? completedTasks,
+    Expression<int>? pendingTasks,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (completedTasks != null) 'completed_tasks': completedTasks,
+      if (pendingTasks != null) 'pending_tasks': pendingTasks,
+    });
+  }
+
+  UsersCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? firstName,
+      Value<String>? lastName,
+      Value<int>? completedTasks,
+      Value<int>? pendingTasks}) {
+    return UsersCompanion(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      completedTasks: completedTasks ?? this.completedTasks,
+      pendingTasks: pendingTasks ?? this.pendingTasks,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (firstName.present) {
+      map['first_name'] = Variable<String>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String>(lastName.value);
+    }
+    if (completedTasks.present) {
+      map['completed_tasks'] = Variable<int>(completedTasks.value);
+    }
+    if (pendingTasks.present) {
+      map['pending_tasks'] = Variable<int>(pendingTasks.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UsersCompanion(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('completedTasks: $completedTasks, ')
+          ..write('pendingTasks: $pendingTasks')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UsersTable extends Users with TableInfo<$UsersTable, User> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $UsersTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedIntColumn id = _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
+  @override
+  late final GeneratedTextColumn firstName = _constructFirstName();
+  GeneratedTextColumn _constructFirstName() {
+    return GeneratedTextColumn('first_name', $tableName, false,
+        minTextLength: 1, maxTextLength: 50);
+  }
+
+  final VerificationMeta _lastNameMeta = const VerificationMeta('lastName');
+  @override
+  late final GeneratedTextColumn lastName = _constructLastName();
+  GeneratedTextColumn _constructLastName() {
+    return GeneratedTextColumn('last_name', $tableName, false,
+        minTextLength: 1, maxTextLength: 50);
+  }
+
+  final VerificationMeta _completedTasksMeta =
+      const VerificationMeta('completedTasks');
+  @override
+  late final GeneratedIntColumn completedTasks = _constructCompletedTasks();
+  GeneratedIntColumn _constructCompletedTasks() {
+    return GeneratedIntColumn('completed_tasks', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
+  final VerificationMeta _pendingTasksMeta =
+      const VerificationMeta('pendingTasks');
+  @override
+  late final GeneratedIntColumn pendingTasks = _constructPendingTasks();
+  GeneratedIntColumn _constructPendingTasks() {
+    return GeneratedIntColumn('pending_tasks', $tableName, false,
+        defaultValue: Constant(0));
+  }
+
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, firstName, lastName, completedTasks, pendingTasks];
+  @override
+  $UsersTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'users';
+  @override
+  final String actualTableName = 'users';
+  @override
+  VerificationContext validateIntegrity(Insertable<User> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(_firstNameMeta,
+          firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta));
+    } else if (isInserting) {
+      context.missing(_firstNameMeta);
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(_lastNameMeta,
+          lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta));
+    } else if (isInserting) {
+      context.missing(_lastNameMeta);
+    }
+    if (data.containsKey('completed_tasks')) {
+      context.handle(
+          _completedTasksMeta,
+          completedTasks.isAcceptableOrUnknown(
+              data['completed_tasks']!, _completedTasksMeta));
+    }
+    if (data.containsKey('pending_tasks')) {
+      context.handle(
+          _pendingTasksMeta,
+          pendingTasks.isAcceptableOrUnknown(
+              data['pending_tasks']!, _pendingTasksMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  User map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return User.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $UsersTable createAlias(String alias) {
+    return $UsersTable(_db, alias);
+  }
+}
+
 class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
@@ -863,7 +1355,7 @@ class $CategoriesTable extends Categories
   late final GeneratedTextColumn content = _constructContent();
   GeneratedTextColumn _constructContent() {
     return GeneratedTextColumn('content', $tableName, false,
-        minTextLength: 1, maxTextLength: 50);
+        minTextLength: 2, maxTextLength: 50);
   }
 
   @override
@@ -915,6 +1407,8 @@ class $CategoriesTable extends Categories
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
+  late final $PastTasksTable pastTasks = $PastTasksTable(this);
+  late final $UsersTable users = $UsersTable(this);
   late final $TasksTable tasks = $TasksTable(this);
   late final $TodosTable todos = $TodosTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
@@ -922,5 +1416,5 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [tasks, todos, categories];
+      [pastTasks, users, tasks, todos, categories];
 }

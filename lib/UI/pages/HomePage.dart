@@ -7,6 +7,7 @@ import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/Components/calendar.dart';
 import 'package:tyme/UI/pages/TasksHomePage.dart';
+import 'package:tyme/UI/pages/UserHome.dart';
 import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
 import 'package:tyme/utils/local_notifications.dart';
@@ -53,15 +54,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: IndexedStack(
         index: _index,
-        children: [
-          TasksHomePage(),
-          CalendarWidget(),
-          Container(
-            color: Colors.red,
-            height: 500,
-            width: 500,
-          )
-        ],
+        children: [TasksHomePage(), CalendarWidget(), UserHome()],
       ),
     );
   }

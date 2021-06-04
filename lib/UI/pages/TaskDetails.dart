@@ -160,6 +160,7 @@ class _TaskDetailsState extends State<TaskDetails>
             margin: EdgeInsets.all(8),
             height: 150,
             child: TextField(
+              enabled: !isDone,
               controller: textEditingController,
               decoration: InputDecoration(
                   focusColor: Colors.blue,
@@ -303,12 +304,18 @@ class _TaskDetailsState extends State<TaskDetails>
                               _menuItem(
                                   isDone ? 'Mark as Undone' : 'Mark as Done',
                                   Icons.check, () {
-                                isDone = !isDone;
+                                setState(() {
+                                  isDone = !isDone;
+                                });
                                 db.updateTask(
                                     widget.task.copyWith(isDone: isDone));
                               }),
                               _menuItem('Delete', Icons.delete, () {
+                                !isDone && widget.task.isDone != isDone
+                                    ? db.changePendingTasks(-1)
+                                    : null;
                                 db.deleteTask(widget.task);
+                                Navigator.pop(context);
                               })
                             ],
                           )),
@@ -323,87 +330,96 @@ class _TaskDetailsState extends State<TaskDetails>
           )
         ],
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        color: Colors.white.withOpacity(0.5),
-        child: AbsorbPointer(
-          absorbing: isDone,
-          child: Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  //  _headerWidget(),
-                  Container(
-                    padding: const EdgeInsets.all(0.0),
-                    child: StreamBuilder(
-                      stream: db.watchAllTodos(widget.task.id),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          lastitem = snapshot.data.length;
-                          getNodesNeeded();
-                          handleFocus();
+      /*Container(
+        decoration: BoxDecoration(
+          color: Colors.grey,
+        ),
+        height: MediaQuery.of(context).size.height,*/
+      body: Stack(children: [
+        Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                //  _headerWidget(),
+                Container(
+                  padding: const EdgeInsets.all(0.0),
+                  child: StreamBuilder(
+                    stream: db.watchAllTodos(widget.task.id),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        lastitem = snapshot.data.length;
+                        getNodesNeeded();
+                        handleFocus();
 
-                          return ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                return TodoTile(
-                                    todo: snapshot.data[index],
-                                    focusNode: _nodes[index],
-                                    onPressed: () {
-                                      Todo todo = snapshot.data[index];
+                        return ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, index) {
+                              return TodoTile(
+                                  todo: snapshot.data[index],
+                                  focusNode: _nodes[index],
+                                  onPressed: () {
+                                    Todo todo = snapshot.data[index];
 
-                                      db.updateTodo(
-                                          todo.copyWith(isDone: !todo.isDone));
-                                    });
-                              });
-                        } else
-                          return Text('sad');
-                      },
+                                    db.updateTodo(
+                                        todo.copyWith(isDone: !todo.isDone));
+                                  });
+                            });
+                      } else
+                        return Text('sad');
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                    onTap: () {
+                      firstLoaded = false;
+                      db.insertTodo(TodosCompanion.insert(
+                          content: '', taskId: widget.task.id));
+                    },
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Text(
+                          'Add Sub-task',
+                          style: TextStyle(color: Colors.blue),
+                        )
+                      ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        firstLoaded = false;
-                        db.insertTodo(TodosCompanion.insert(
-                            content: '', taskId: widget.task.id));
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: Colors.blue,
-                          ),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Text(
-                            'Add Sub-task',
-                            style: TextStyle(color: Colors.blue),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Divider(color: AppColors.bleuGrey),
-                  _dueDateWidget(),
-                  Divider(color: AppColors.bleuGrey),
-                  _reminderWidget(),
-                  Divider(color: AppColors.bleuGrey),
-                  _noteWidget()
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Divider(color: AppColors.bleuGrey),
+                _dueDateWidget(),
+                Divider(color: AppColors.bleuGrey),
+                _reminderWidget(),
+                Divider(color: AppColors.bleuGrey),
+                _noteWidget()
+              ],
             ),
           ),
         ),
-      ),
+        isDone
+            ? Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.5),
+                ),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+              )
+            : Container()
+      ]),
       /*  floatingActionButton: FloatingActionButton(onPressed: () {
         db.insertTodo(
             TodosCompanion.insert(content: 'Eat Food', taskId: widget.task.id));
@@ -413,8 +429,18 @@ class _TaskDetailsState extends State<TaskDetails>
 
   @override
   void dispose() {
+    if (isDone == widget.task.isDone) {
+    } else if (isDone && !widget.task.isDone) {
+      db.changeDoneTasks(1).then((value) => db.changePendingTasks(-1));
+    } else {
+      db.changeDoneTasks(-1).then((value) => db.changePendingTasks(1));
+    }
+
+    if (isDone && !widget.task.isDone) db.insertPastTask();
+
     _controller.dispose();
-    db.updateTask(widget.task.copyWith(note: textEditingController.text));
+    db.updateTask(
+        widget.task.copyWith(note: textEditingController.text, isDone: isDone));
     _nodes.forEach((element) {
       element.dispose();
     });

@@ -184,23 +184,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               SizedBox(
                 height: 8,
               ),
-              /*  ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                leading: Icon(
-                  Icons.lens,
-                  color: colorsList[_selectedColorIndex],
-                ),
-                title: Text(colorsNames[_selectedColorIndex]),
-                onTap: () {
-                  showDialog<Widget>(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (context) {
-                      return colorPicker();
-                    },
-                  );
-                },
-              ),*/
               ElevatedButton.icon(
                   onPressed: () {
                     final DateTime _taskDate = DateTime(
@@ -222,16 +205,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                         .then((value) => db
                             .getTask(value)
                             .then((task) => Navigator.of(context).pop(task)));
-
-                    /* Navigator.of(context).pop(Task(
-                      id: 0,
-                        color: colorsList[_selectedColorIndex],
-                        dueDate: _taskDate,
-                        //  dateEnd: widget.selectedDay ?? DateTime.now(),
-                        isAllDay: false,
-                        category: categories[_selectedCategoryIndex],
-                        title: titleTextEditingController.text,
-                        note: noteTextEditingController.text));*/
                   },
                   icon: Icon(Icons.done),
                   label: Text('Done'))
