@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tyme/UI/Components/BarGraphs.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
+import 'package:tyme/utils/AppLocalizations.dart';
 import 'package:tyme/utils/konstants.dart';
 
 class UserHome extends StatefulWidget {
@@ -64,7 +65,9 @@ class _UserHomeState extends State<UserHome> {
                             width: 8,
                           ),
                           Text(
-                            user!.firstName + " " + user.lastName,
+                            AppLocalizations.of(context).translate('title'),
+
+                            // user!.firstName + " " + user.lastName,
                             style: TextStyle(fontSize: 30),
                           )
                         ],
@@ -89,8 +92,8 @@ class _UserHomeState extends State<UserHome> {
                           ),
                           Row(
                             children: [
-                              _numberWidget(
-                                  'Done Tasks', user.completedTasks.toString()),
+                              _numberWidget('Done Tasks',
+                                  user!.completedTasks.toString()),
                               _numberWidget(
                                   'Pending Tasks', user.pendingTasks.toString())
                             ],

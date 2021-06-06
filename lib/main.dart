@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:moor/moor.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
-import 'package:tyme/UI/pages/TaskDetails.dart';
+
 import 'package:tyme/database/database.dart';
+import 'package:tyme/utils/AppLocalizations.dart';
 import 'package:tyme/utils/global_vars.dart';
-import 'package:tyme/utils/konstants.dart';
+
 import 'package:tyme/utils/local_notifications.dart';
 
 void main() {
-  initializeDateFormatting('fr_FR', null).then((_) {
-    runApp(ProviderScope(
-      child: MyApp(),
-    ));
-    appNotifications.initPlugin();
-  });
+  runApp(ProviderScope(
+    child: MyApp(),
+  ));
+  appNotifications.initPlugin();
 }
 
 AppDatabase db = new AppDatabase();
@@ -25,6 +25,15 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     return MaterialApp(
+        localizationsDelegates: [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          Locale("en"),
+          Locale("fr"),
+        ],
         navigatorKey: GlobalVariable.navState,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
