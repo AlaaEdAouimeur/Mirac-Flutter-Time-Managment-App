@@ -195,12 +195,14 @@ class $PastTasksTable extends PastTasks
 
 class User extends DataClass implements Insertable<User> {
   final int id;
+  final int score;
   final String firstName;
   final String lastName;
   final int completedTasks;
   final int pendingTasks;
   User(
       {required this.id,
+      required this.score,
       required this.firstName,
       required this.lastName,
       required this.completedTasks,
@@ -212,6 +214,7 @@ class User extends DataClass implements Insertable<User> {
     final stringType = db.typeSystem.forDartType<String>();
     return User(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      score: intType.mapFromDatabaseResponse(data['${effectivePrefix}score'])!,
       firstName: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name'])!,
       lastName: stringType
@@ -226,6 +229,7 @@ class User extends DataClass implements Insertable<User> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['score'] = Variable<int>(score);
     map['first_name'] = Variable<String>(firstName);
     map['last_name'] = Variable<String>(lastName);
     map['completed_tasks'] = Variable<int>(completedTasks);
@@ -236,6 +240,7 @@ class User extends DataClass implements Insertable<User> {
   UsersCompanion toCompanion(bool nullToAbsent) {
     return UsersCompanion(
       id: Value(id),
+      score: Value(score),
       firstName: Value(firstName),
       lastName: Value(lastName),
       completedTasks: Value(completedTasks),
@@ -248,6 +253,7 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return User(
       id: serializer.fromJson<int>(json['id']),
+      score: serializer.fromJson<int>(json['score']),
       firstName: serializer.fromJson<String>(json['firstName']),
       lastName: serializer.fromJson<String>(json['lastName']),
       completedTasks: serializer.fromJson<int>(json['completedTasks']),
@@ -259,6 +265,7 @@ class User extends DataClass implements Insertable<User> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'score': serializer.toJson<int>(score),
       'firstName': serializer.toJson<String>(firstName),
       'lastName': serializer.toJson<String>(lastName),
       'completedTasks': serializer.toJson<int>(completedTasks),
@@ -268,12 +275,14 @@ class User extends DataClass implements Insertable<User> {
 
   User copyWith(
           {int? id,
+          int? score,
           String? firstName,
           String? lastName,
           int? completedTasks,
           int? pendingTasks}) =>
       User(
         id: id ?? this.id,
+        score: score ?? this.score,
         firstName: firstName ?? this.firstName,
         lastName: lastName ?? this.lastName,
         completedTasks: completedTasks ?? this.completedTasks,
@@ -283,6 +292,7 @@ class User extends DataClass implements Insertable<User> {
   String toString() {
     return (StringBuffer('User(')
           ..write('id: $id, ')
+          ..write('score: $score, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('completedTasks: $completedTasks, ')
@@ -295,14 +305,17 @@ class User extends DataClass implements Insertable<User> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          firstName.hashCode,
-          $mrjc(lastName.hashCode,
-              $mrjc(completedTasks.hashCode, pendingTasks.hashCode)))));
+          score.hashCode,
+          $mrjc(
+              firstName.hashCode,
+              $mrjc(lastName.hashCode,
+                  $mrjc(completedTasks.hashCode, pendingTasks.hashCode))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is User &&
           other.id == this.id &&
+          other.score == this.score &&
           other.firstName == this.firstName &&
           other.lastName == this.lastName &&
           other.completedTasks == this.completedTasks &&
@@ -311,12 +324,14 @@ class User extends DataClass implements Insertable<User> {
 
 class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
+  final Value<int> score;
   final Value<String> firstName;
   final Value<String> lastName;
   final Value<int> completedTasks;
   final Value<int> pendingTasks;
   const UsersCompanion({
     this.id = const Value.absent(),
+    this.score = const Value.absent(),
     this.firstName = const Value.absent(),
     this.lastName = const Value.absent(),
     this.completedTasks = const Value.absent(),
@@ -324,6 +339,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   });
   UsersCompanion.insert({
     this.id = const Value.absent(),
+    this.score = const Value.absent(),
     required String firstName,
     required String lastName,
     this.completedTasks = const Value.absent(),
@@ -332,6 +348,7 @@ class UsersCompanion extends UpdateCompanion<User> {
         lastName = Value(lastName);
   static Insertable<User> custom({
     Expression<int>? id,
+    Expression<int>? score,
     Expression<String>? firstName,
     Expression<String>? lastName,
     Expression<int>? completedTasks,
@@ -339,6 +356,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (score != null) 'score': score,
       if (firstName != null) 'first_name': firstName,
       if (lastName != null) 'last_name': lastName,
       if (completedTasks != null) 'completed_tasks': completedTasks,
@@ -348,12 +366,14 @@ class UsersCompanion extends UpdateCompanion<User> {
 
   UsersCompanion copyWith(
       {Value<int>? id,
+      Value<int>? score,
       Value<String>? firstName,
       Value<String>? lastName,
       Value<int>? completedTasks,
       Value<int>? pendingTasks}) {
     return UsersCompanion(
       id: id ?? this.id,
+      score: score ?? this.score,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       completedTasks: completedTasks ?? this.completedTasks,
@@ -366,6 +386,9 @@ class UsersCompanion extends UpdateCompanion<User> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<int>(score.value);
     }
     if (firstName.present) {
       map['first_name'] = Variable<String>(firstName.value);
@@ -386,6 +409,7 @@ class UsersCompanion extends UpdateCompanion<User> {
   String toString() {
     return (StringBuffer('UsersCompanion(')
           ..write('id: $id, ')
+          ..write('score: $score, ')
           ..write('firstName: $firstName, ')
           ..write('lastName: $lastName, ')
           ..write('completedTasks: $completedTasks, ')
@@ -405,6 +429,14 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   GeneratedIntColumn _constructId() {
     return GeneratedIntColumn('id', $tableName, false,
         hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedIntColumn score = _constructScore();
+  GeneratedIntColumn _constructScore() {
+    return GeneratedIntColumn('score', $tableName, false,
+        defaultValue: Constant(0));
   }
 
   final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
@@ -443,7 +475,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, firstName, lastName, completedTasks, pendingTasks];
+      [id, score, firstName, lastName, completedTasks, pendingTasks];
   @override
   $UsersTable get asDslTable => this;
   @override
@@ -457,6 +489,10 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+          _scoreMeta, score.isAcceptableOrUnknown(data['score']!, _scoreMeta));
     }
     if (data.containsKey('first_name')) {
       context.handle(_firstNameMeta,
@@ -505,6 +541,9 @@ class Task extends DataClass implements Insertable<Task> {
   final int category;
   final String note;
   final bool isDone;
+  final bool isChallenge;
+  final int? score;
+  final int? completedTasks;
   final DateTime dueDate;
   final DateTime? reminderDate;
   Task(
@@ -513,6 +552,9 @@ class Task extends DataClass implements Insertable<Task> {
       required this.category,
       required this.note,
       required this.isDone,
+      required this.isChallenge,
+      this.score,
+      this.completedTasks,
       required this.dueDate,
       this.reminderDate});
   factory Task.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -531,6 +573,11 @@ class Task extends DataClass implements Insertable<Task> {
       note: stringType.mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
       isDone:
           boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
+      isChallenge: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_challenge'])!,
+      score: intType.mapFromDatabaseResponse(data['${effectivePrefix}score']),
+      completedTasks: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}completed_tasks']),
       dueDate: dateTimeType
           .mapFromDatabaseResponse(data['${effectivePrefix}due_date'])!,
       reminderDate: dateTimeType
@@ -545,6 +592,13 @@ class Task extends DataClass implements Insertable<Task> {
     map['category'] = Variable<int>(category);
     map['note'] = Variable<String>(note);
     map['is_done'] = Variable<bool>(isDone);
+    map['is_challenge'] = Variable<bool>(isChallenge);
+    if (!nullToAbsent || score != null) {
+      map['score'] = Variable<int?>(score);
+    }
+    if (!nullToAbsent || completedTasks != null) {
+      map['completed_tasks'] = Variable<int?>(completedTasks);
+    }
     map['due_date'] = Variable<DateTime>(dueDate);
     if (!nullToAbsent || reminderDate != null) {
       map['reminder_date'] = Variable<DateTime?>(reminderDate);
@@ -559,6 +613,12 @@ class Task extends DataClass implements Insertable<Task> {
       category: Value(category),
       note: Value(note),
       isDone: Value(isDone),
+      isChallenge: Value(isChallenge),
+      score:
+          score == null && nullToAbsent ? const Value.absent() : Value(score),
+      completedTasks: completedTasks == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedTasks),
       dueDate: Value(dueDate),
       reminderDate: reminderDate == null && nullToAbsent
           ? const Value.absent()
@@ -575,6 +635,9 @@ class Task extends DataClass implements Insertable<Task> {
       category: serializer.fromJson<int>(json['category']),
       note: serializer.fromJson<String>(json['note']),
       isDone: serializer.fromJson<bool>(json['isDone']),
+      isChallenge: serializer.fromJson<bool>(json['isChallenge']),
+      score: serializer.fromJson<int?>(json['score']),
+      completedTasks: serializer.fromJson<int?>(json['completedTasks']),
       dueDate: serializer.fromJson<DateTime>(json['dueDate']),
       reminderDate: serializer.fromJson<DateTime?>(json['reminderDate']),
     );
@@ -588,6 +651,9 @@ class Task extends DataClass implements Insertable<Task> {
       'category': serializer.toJson<int>(category),
       'note': serializer.toJson<String>(note),
       'isDone': serializer.toJson<bool>(isDone),
+      'isChallenge': serializer.toJson<bool>(isChallenge),
+      'score': serializer.toJson<int?>(score),
+      'completedTasks': serializer.toJson<int?>(completedTasks),
       'dueDate': serializer.toJson<DateTime>(dueDate),
       'reminderDate': serializer.toJson<DateTime?>(reminderDate),
     };
@@ -599,6 +665,9 @@ class Task extends DataClass implements Insertable<Task> {
           int? category,
           String? note,
           bool? isDone,
+          bool? isChallenge,
+          int? score,
+          int? completedTasks,
           DateTime? dueDate,
           DateTime? reminderDate}) =>
       Task(
@@ -607,6 +676,9 @@ class Task extends DataClass implements Insertable<Task> {
         category: category ?? this.category,
         note: note ?? this.note,
         isDone: isDone ?? this.isDone,
+        isChallenge: isChallenge ?? this.isChallenge,
+        score: score ?? this.score,
+        completedTasks: completedTasks ?? this.completedTasks,
         dueDate: dueDate ?? this.dueDate,
         reminderDate: reminderDate ?? this.reminderDate,
       );
@@ -618,6 +690,9 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('category: $category, ')
           ..write('note: $note, ')
           ..write('isDone: $isDone, ')
+          ..write('isChallenge: $isChallenge, ')
+          ..write('score: $score, ')
+          ..write('completedTasks: $completedTasks, ')
           ..write('dueDate: $dueDate, ')
           ..write('reminderDate: $reminderDate')
           ..write(')'))
@@ -633,8 +708,16 @@ class Task extends DataClass implements Insertable<Task> {
               category.hashCode,
               $mrjc(
                   note.hashCode,
-                  $mrjc(isDone.hashCode,
-                      $mrjc(dueDate.hashCode, reminderDate.hashCode)))))));
+                  $mrjc(
+                      isDone.hashCode,
+                      $mrjc(
+                          isChallenge.hashCode,
+                          $mrjc(
+                              score.hashCode,
+                              $mrjc(
+                                  completedTasks.hashCode,
+                                  $mrjc(dueDate.hashCode,
+                                      reminderDate.hashCode))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -644,6 +727,9 @@ class Task extends DataClass implements Insertable<Task> {
           other.category == this.category &&
           other.note == this.note &&
           other.isDone == this.isDone &&
+          other.isChallenge == this.isChallenge &&
+          other.score == this.score &&
+          other.completedTasks == this.completedTasks &&
           other.dueDate == this.dueDate &&
           other.reminderDate == this.reminderDate);
 }
@@ -654,6 +740,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<int> category;
   final Value<String> note;
   final Value<bool> isDone;
+  final Value<bool> isChallenge;
+  final Value<int?> score;
+  final Value<int?> completedTasks;
   final Value<DateTime> dueDate;
   final Value<DateTime?> reminderDate;
   const TasksCompanion({
@@ -662,6 +751,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     this.category = const Value.absent(),
     this.note = const Value.absent(),
     this.isDone = const Value.absent(),
+    this.isChallenge = const Value.absent(),
+    this.score = const Value.absent(),
+    this.completedTasks = const Value.absent(),
     this.dueDate = const Value.absent(),
     this.reminderDate = const Value.absent(),
   });
@@ -671,6 +763,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required int category,
     required String note,
     this.isDone = const Value.absent(),
+    this.isChallenge = const Value.absent(),
+    this.score = const Value.absent(),
+    this.completedTasks = const Value.absent(),
     required DateTime dueDate,
     this.reminderDate = const Value.absent(),
   })  : title = Value(title),
@@ -683,6 +778,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     Expression<int>? category,
     Expression<String>? note,
     Expression<bool>? isDone,
+    Expression<bool>? isChallenge,
+    Expression<int?>? score,
+    Expression<int?>? completedTasks,
     Expression<DateTime>? dueDate,
     Expression<DateTime?>? reminderDate,
   }) {
@@ -692,6 +790,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (category != null) 'category': category,
       if (note != null) 'note': note,
       if (isDone != null) 'is_done': isDone,
+      if (isChallenge != null) 'is_challenge': isChallenge,
+      if (score != null) 'score': score,
+      if (completedTasks != null) 'completed_tasks': completedTasks,
       if (dueDate != null) 'due_date': dueDate,
       if (reminderDate != null) 'reminder_date': reminderDate,
     });
@@ -703,6 +804,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
       Value<int>? category,
       Value<String>? note,
       Value<bool>? isDone,
+      Value<bool>? isChallenge,
+      Value<int?>? score,
+      Value<int?>? completedTasks,
       Value<DateTime>? dueDate,
       Value<DateTime?>? reminderDate}) {
     return TasksCompanion(
@@ -711,6 +815,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
       category: category ?? this.category,
       note: note ?? this.note,
       isDone: isDone ?? this.isDone,
+      isChallenge: isChallenge ?? this.isChallenge,
+      score: score ?? this.score,
+      completedTasks: completedTasks ?? this.completedTasks,
       dueDate: dueDate ?? this.dueDate,
       reminderDate: reminderDate ?? this.reminderDate,
     );
@@ -734,6 +841,15 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (isDone.present) {
       map['is_done'] = Variable<bool>(isDone.value);
     }
+    if (isChallenge.present) {
+      map['is_challenge'] = Variable<bool>(isChallenge.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<int?>(score.value);
+    }
+    if (completedTasks.present) {
+      map['completed_tasks'] = Variable<int?>(completedTasks.value);
+    }
     if (dueDate.present) {
       map['due_date'] = Variable<DateTime>(dueDate.value);
     }
@@ -751,6 +867,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('category: $category, ')
           ..write('note: $note, ')
           ..write('isDone: $isDone, ')
+          ..write('isChallenge: $isChallenge, ')
+          ..write('score: $score, ')
+          ..write('completedTasks: $completedTasks, ')
           ..write('dueDate: $dueDate, ')
           ..write('reminderDate: $reminderDate')
           ..write(')'))
@@ -805,6 +924,38 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
         defaultValue: Constant(false));
   }
 
+  final VerificationMeta _isChallengeMeta =
+      const VerificationMeta('isChallenge');
+  @override
+  late final GeneratedBoolColumn isChallenge = _constructIsChallenge();
+  GeneratedBoolColumn _constructIsChallenge() {
+    return GeneratedBoolColumn('is_challenge', $tableName, false,
+        defaultValue: Constant(false));
+  }
+
+  final VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedIntColumn score = _constructScore();
+  GeneratedIntColumn _constructScore() {
+    return GeneratedIntColumn(
+      'score',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _completedTasksMeta =
+      const VerificationMeta('completedTasks');
+  @override
+  late final GeneratedIntColumn completedTasks = _constructCompletedTasks();
+  GeneratedIntColumn _constructCompletedTasks() {
+    return GeneratedIntColumn(
+      'completed_tasks',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _dueDateMeta = const VerificationMeta('dueDate');
   @override
   late final GeneratedDateTimeColumn dueDate = _constructDueDate();
@@ -829,8 +980,18 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   }
 
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, title, category, note, isDone, dueDate, reminderDate];
+  List<GeneratedColumn> get $columns => [
+        id,
+        title,
+        category,
+        note,
+        isDone,
+        isChallenge,
+        score,
+        completedTasks,
+        dueDate,
+        reminderDate
+      ];
   @override
   $TasksTable get asDslTable => this;
   @override
@@ -866,6 +1027,22 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     if (data.containsKey('is_done')) {
       context.handle(_isDoneMeta,
           isDone.isAcceptableOrUnknown(data['is_done']!, _isDoneMeta));
+    }
+    if (data.containsKey('is_challenge')) {
+      context.handle(
+          _isChallengeMeta,
+          isChallenge.isAcceptableOrUnknown(
+              data['is_challenge']!, _isChallengeMeta));
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+          _scoreMeta, score.isAcceptableOrUnknown(data['score']!, _scoreMeta));
+    }
+    if (data.containsKey('completed_tasks')) {
+      context.handle(
+          _completedTasksMeta,
+          completedTasks.isAcceptableOrUnknown(
+              data['completed_tasks']!, _completedTasksMeta));
     }
     if (data.containsKey('due_date')) {
       context.handle(_dueDateMeta,

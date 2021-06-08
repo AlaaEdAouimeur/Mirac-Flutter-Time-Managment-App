@@ -62,6 +62,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             category: 1,
             note: 'note',
             isDone: false,
+            isChallenge: false,
             dueDate: DateTime.now(),
             reminderDate: DateTime.now());
     Navigator.of(context)
@@ -76,7 +77,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           return StreamBuilder<List<Task>>(
               stream: db.watchAllTasks(),
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.hasData || snapshot.data != null) {
                   List<Task> _dayTasks = snapshot.data!
                       .where((element) =>
                           element.dueDate.day == _selectedDay.day &&

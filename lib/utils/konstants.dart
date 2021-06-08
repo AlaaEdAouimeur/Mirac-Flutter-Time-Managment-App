@@ -29,6 +29,11 @@ class AppColors {
   static Color darkGrey = Color(0xff7a7e81);
 }
 
+List<Score> scores = [
+  Score(title: 'Gold', score: 500),
+  Score(title: 'Silver', score: 300),
+  Score(title: 'Bronze', score: 100),
+];
 List<Categorie> categories = [
   Categorie(
     color: Colors.red.value,
@@ -69,5 +74,14 @@ class ItemModel {
   ItemModel({
     required this.title,
     required this.icondata,
+  });
+}
+
+class Score {
+  String title;
+  int score;
+  Score({
+    required this.title,
+    required this.score,
   });
 }

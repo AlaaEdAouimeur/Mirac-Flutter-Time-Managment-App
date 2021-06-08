@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 
 class AppTextField extends StatelessWidget {
   final String hintText;
+  final Color color;
   final TextEditingController textEditingController;
   final bool isObligatory;
   AppTextField(
       {Key? key,
       required this.hintText,
       required this.textEditingController,
-      required this.isObligatory})
+      required this.isObligatory,
+      required this.color})
       : super(key: key);
   Color borderColor = Colors.black;
 
@@ -31,6 +33,7 @@ class AppTextField extends StatelessWidget {
         validator: _validate,
         controller: textEditingController,
         decoration: InputDecoration(
+            focusColor: color,
             errorText: _validate(textEditingController.text),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(

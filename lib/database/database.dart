@@ -12,6 +12,9 @@ class Tasks extends Table {
       integer().customConstraint('NULL REFERENCES categories(id)')();
   TextColumn get note => text()();
   BoolColumn get isDone => boolean().withDefault(Constant(false))();
+  BoolColumn get isChallenge => boolean().withDefault(Constant(false))();
+  IntColumn get score => integer().nullable()();
+  IntColumn get completedTasks => integer().nullable()();
   DateTimeColumn get dueDate => dateTime()();
   DateTimeColumn get reminderDate => dateTime().nullable()();
 }
@@ -39,6 +42,7 @@ class Categories extends Table {
 
 class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
+  IntColumn get score => integer().withDefault(Constant(0))();
   TextColumn get firstName => text().withLength(min: 1, max: 50)();
   TextColumn get lastName => text().withLength(min: 1, max: 50)();
   IntColumn get completedTasks => integer().withDefault(Constant(0))();
@@ -114,9 +118,9 @@ class AppDatabase extends _$AppDatabase {
     return (select(users)).watchSingle();
   }
 
-  void ii() async {
+  Future<User> getUser() async {
     List<User> _users = await select(users).get();
-    print(_users);
+    return _users.first;
   }
 
   Future insertUser(UsersCompanion user) => into(users).insert(user);
@@ -134,6 +138,11 @@ class AppDatabase extends _$AppDatabase {
     User _user = await select(users).getSingle();
     int temp2 = _user.pendingTasks + x;
     update(users).replace(_user.copyWith(pendingTasks: temp2));
+  }
+
+  void inscreaseScore(int amount) async {
+    User user = await getUser();
+    updateUser(user.copyWith(score: user.score + amount));
   }
 ///////////////////////////////////////////
 

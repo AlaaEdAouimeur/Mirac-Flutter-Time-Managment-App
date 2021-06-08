@@ -9,12 +9,14 @@ import 'package:tyme/utils/konstants.dart';
 class TodoTile extends StatefulWidget {
   final Todo todo;
   final VoidCallback onPressed;
+  final VoidCallback handleNextFocus;
   final FocusNode focusNode;
   const TodoTile(
       {Key? key,
       required this.todo,
       required this.focusNode,
-      required this.onPressed})
+      required this.onPressed,
+      required this.handleNextFocus})
       : super(key: key);
   @override
   _TodoTileState createState() => _TodoTileState();
@@ -46,8 +48,10 @@ class _TodoTileState extends State<TodoTile>
                 decoration: widget.todo.isDone
                     ? TextDecoration.lineThrough
                     : TextDecoration.none),
-            onEditingComplete: () => db.updateTodo(
-                widget.todo.copyWith(content: textEditingController.text)),
+            onEditingComplete: () {
+              widget.handleNextFocus();
+              widget.todo.copyWith(content: textEditingController.text);
+            },
             onSubmitted: (sd) {
               widget.focusNode.unfocus();
               db.updateTodo(

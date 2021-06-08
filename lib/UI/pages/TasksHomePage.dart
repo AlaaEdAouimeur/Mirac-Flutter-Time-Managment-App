@@ -29,7 +29,10 @@ class _TasksHomePageState extends State<TasksHomePage> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          _chipIndex = i;
+                          if (_chipIndex == i)
+                            _chipIndex = -1;
+                          else
+                            _chipIndex = i;
                         });
                       },
                       child: Chip(
@@ -99,15 +102,20 @@ class _TasksHomePageState extends State<TasksHomePage> {
                           elevation: 0,
                           color: AppColors.trafficWhite,
                           child: ListTile(
-                            leading: Checkbox(
-                              activeColor: AppColors.darkGrey,
-                              value: _tasks[i].isDone,
-                              onChanged: (f) {
-                                db.updateTask(_tasks[i].copyWith(isDone: f));
-                              },
-                            ),
-                            title: Text(_tasks[i].title),
-                          ),
+                              leading: Checkbox(
+                                activeColor: AppColors.darkGrey,
+                                value: _tasks[i].isDone,
+                                onChanged: (f) {
+                                  db.updateTask(_tasks[i].copyWith(isDone: f));
+                                },
+                              ),
+                              title: Text(_tasks[i].title),
+                              trailing: _tasks[i].isChallenge
+                                  ? Icon(
+                                      Icons.local_atm_rounded,
+                                      color: Colors.amber,
+                                    )
+                                  : null),
                         ),
                       );
                     },

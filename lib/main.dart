@@ -24,6 +24,8 @@ AppNotifications appNotifications = new AppNotifications();
 class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ScopedReader watch) {
+    /*   db.insertUser(
+        UsersCompanion(firstName: Value('SI'), lastName: Value('dss')));*/
     return MaterialApp(
         localizationsDelegates: [
           AppLocalizations.delegate,

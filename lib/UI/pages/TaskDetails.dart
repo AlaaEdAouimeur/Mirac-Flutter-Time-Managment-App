@@ -3,6 +3,7 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tyme/UI/Components/TodoTile.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 
@@ -277,6 +278,23 @@ class _TaskDetailsState extends State<TaskDetails>
     return Scaffold(
       backgroundColor: AppColors.trafficWhite,
       appBar: AppBar(
+        centerTitle: true,
+        title: widget.task.isChallenge
+            ? Row(
+                children: [
+                  //b7e8ff00
+                  Text('Challenge'),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  LottieBuilder.asset(
+                    'assets/small_prize.json',
+                    height: 50,
+                    width: 50,
+                  ),
+                ],
+              )
+            : Container(),
         elevation: 0,
         backgroundColor: AppColors.trafficWhite,
         leading: IconButton(
@@ -360,6 +378,11 @@ class _TaskDetailsState extends State<TaskDetails>
                               return TodoTile(
                                   todo: snapshot.data[index],
                                   focusNode: _nodes[index],
+                                  handleNextFocus: () {
+                                    firstLoaded = false;
+                                    db.insertTodo(TodosCompanion.insert(
+                                        content: '', taskId: widget.task.id));
+                                  },
                                   onPressed: () {
                                     Todo todo = snapshot.data[index];
 
@@ -405,7 +428,7 @@ class _TaskDetailsState extends State<TaskDetails>
                 Divider(color: AppColors.bleuGrey),
                 _reminderWidget(),
                 Divider(color: AppColors.bleuGrey),
-                _noteWidget()
+                _noteWidget(),
               ],
             ),
           ),
@@ -436,11 +459,15 @@ class _TaskDetailsState extends State<TaskDetails>
       db.changeDoneTasks(-1).then((value) => db.changePendingTasks(1));
     }
 
-    if (isDone && !widget.task.isDone) db.insertPastTask();
+    if (isDone && !widget.task.isDone) {
+      db.insertPastTask();
+      db.inscreaseScore(widget.task.score ?? 0);
+    }
 
     _controller.dispose();
     db.updateTask(
         widget.task.copyWith(note: textEditingController.text, isDone: isDone));
+
     _nodes.forEach((element) {
       element.dispose();
     });
