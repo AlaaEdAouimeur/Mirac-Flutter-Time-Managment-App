@@ -5,13 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tyme/UI/Components/TodoTile.dart';
-import 'package:tyme/UI/pages/HomePage.dart';
 
 import 'package:tyme/database/database.dart';
-import 'package:tyme/database/database.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tyme/main.dart';
-import 'package:tyme/providers/tasksProvider.dart';
 import 'package:tyme/utils/dateUtils.dart';
 import 'package:tyme/utils/konstants.dart';
 
@@ -25,12 +21,11 @@ class TaskDetails extends StatefulWidget {
 
 class _TaskDetailsState extends State<TaskDetails>
     with SingleTickerProviderStateMixin {
-  List<FocusNode> _nodes = [];
+  final List<FocusNode> _nodes = [];
   late DateTime _selectedDateTime;
   TimeOfDay? _selectedDayTime;
   AnimateIconController controller = AnimateIconController();
   bool isPlaying = false;
-  Categorie? _selectedCategory;
   bool firstLoaded = true;
   late bool isDone;
   @override
@@ -45,7 +40,9 @@ class _TaskDetailsState extends State<TaskDetails>
   void getNodesNeeded() {
     if (_nodes.length != lastitem) {
       _nodes.clear();
-      for (int i = 0; i < lastitem; i++) _nodes.add(FocusNode());
+      for (var i = 0; i < lastitem; i++) {
+        _nodes.add(FocusNode());
+      }
     }
   }
 
@@ -84,37 +81,6 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
-  Widget _dateWidget() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-          child: Text(
-            kToday.day.toString(),
-            style: TextStyle(fontSize: 41, fontWeight: FontWeight.bold),
-          ),
-          height: 50,
-          width: 50,
-        ),
-        SizedBox(
-          width: 8,
-        ),
-        Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(DateFormat('MMMM').format(kToday)),
-              Text(kToday.year.toString())
-            ],
-          ),
-          height: 50,
-          width: 50,
-        )
-      ],
-    );
-  }
-
   Widget _dueDateWidget() {
     return InkWell(
       onTap: () async {
@@ -124,7 +90,7 @@ class _TaskDetailsState extends State<TaskDetails>
                 firstDate: kToday,
                 lastDate: kLastDay) ??
             _selectedDateTime;
-        db.updateTask(widget.task.copyWith(dueDate: _selectedDateTime));
+        await db.updateTask(widget.task.copyWith(dueDate: _selectedDateTime));
         setState(() {});
       },
       child: Column(
@@ -152,7 +118,7 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
-  TextEditingController textEditingController = new TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   Widget _noteWidget() {
     return Column(
       children: [
@@ -235,7 +201,7 @@ class _TaskDetailsState extends State<TaskDetails>
             appNotifications.cancelAllNotifications(widget.task.id);
           } else {
             setState(() {
-              DateTime temp = DateTime(kToday.year, kToday.month, kToday.day,
+              var temp = DateTime(kToday.year, kToday.month, kToday.day,
                   _selectedDayTime!.hour, _selectedDayTime!.minute);
               db.updateTask(widget.task.copyWith(reminderDate: temp)).then(
                   (value) => appNotifications.scheduleNotification(
@@ -271,7 +237,7 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
-  CustomPopupMenuController _controller = CustomPopupMenuController();
+  final CustomPopupMenuController _controller = CustomPopupMenuController();
   int lastitem = 0;
   @override
   Widget build(BuildContext context) {
@@ -305,7 +271,6 @@ class _TaskDetailsState extends State<TaskDetails>
           Padding(
             padding: EdgeInsets.all(20),
             child: CustomPopupMenu(
-              child: Icon(Icons.more_vert),
               menuBuilder: () => ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: Container(
@@ -344,6 +309,7 @@ class _TaskDetailsState extends State<TaskDetails>
               pressType: PressType.singleClick,
               verticalMargin: -10,
               controller: _controller,
+              child: Icon(Icons.more_vert),
             ),
           )
         ],
@@ -461,12 +427,16 @@ class _TaskDetailsState extends State<TaskDetails>
 
     if (isDone && !widget.task.isDone) {
       db.insertPastTask();
+      db.updateTask(widget.task.copyWith(
+          note: textEditingController.text,
+          isDone: isDone,
+          isChallenge: false));
       db.inscreaseScore(widget.task.score ?? 0);
+    } else {
+      db.updateTask(widget.task
+          .copyWith(note: textEditingController.text, isDone: isDone));
     }
-
     _controller.dispose();
-    db.updateTask(
-        widget.task.copyWith(note: textEditingController.text, isDone: isDone));
 
     _nodes.forEach((element) {
       element.dispose();

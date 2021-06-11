@@ -1,6 +1,6 @@
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
-import 'package:tyme/utils/konstants.dart' as K;
+import 'package:tyme/utils/konstants.dart' as k;
 
 part 'database.g.dart';
 
@@ -88,7 +88,7 @@ class AppDatabase extends _$AppDatabase {
 
   //////////////TODOS/////////////
   Future<List<Todo>> getAllNotes(int id) async {
-    List<Todo> list = await select(todos).get();
+    var list = await select(todos).get();
     return list.where((element) => element.id == id).toList();
   }
 
@@ -107,9 +107,9 @@ class AppDatabase extends _$AppDatabase {
   void insertCategories(Categorie c) => into(categories).insert(c);
   Future<List<Categorie>> getCategories() => select(categories).get();
   void deleteCategory(Categorie c) async {
-    delete(categories).delete(c);
+    await delete(categories).delete(c);
     delete(tasks).where((tbl) => tbl.category.equals(c.id));
-    K.categories = await getCategories();
+    k.categories = await getCategories();
   }
   ////////////////////////////////
 
@@ -119,7 +119,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<User> getUser() async {
-    List<User> _users = await select(users).get();
+    var _users = await select(users).get();
     return _users.first;
   }
 
@@ -129,20 +129,20 @@ class AppDatabase extends _$AppDatabase {
   Future<int> count() => (select(users).get()).then((value) => value.length);
 
   Future<void> changeDoneTasks(int x) async {
-    User _user = await select(users).getSingle();
-    int temp1 = _user.completedTasks + x;
-    update(users).replace(_user.copyWith(completedTasks: temp1));
+    var _user = await select(users).getSingle();
+    var temp1 = _user.completedTasks + x;
+    await update(users).replace(_user.copyWith(completedTasks: temp1));
   }
 
   Future<void> changePendingTasks(int x) async {
-    User _user = await select(users).getSingle();
-    int temp2 = _user.pendingTasks + x;
-    update(users).replace(_user.copyWith(pendingTasks: temp2));
+    var _user = await select(users).getSingle();
+    var temp2 = _user.pendingTasks + x;
+    await update(users).replace(_user.copyWith(pendingTasks: temp2));
   }
 
   void inscreaseScore(int amount) async {
-    User user = await getUser();
-    updateUser(user.copyWith(score: user.score + amount));
+    var user = await getUser();
+    await updateUser(user.copyWith(score: user.score + amount));
   }
 ///////////////////////////////////////////
 
@@ -151,5 +151,5 @@ class AppDatabase extends _$AppDatabase {
       .insert(PastTasksCompanion(dateFinished: Value(DateTime.now())));
 
   Stream<List<PastTask>> getPastTasks() => select(pastTasks).watch();
-  await(SimpleSelectStatement<$UsersTable, User> simpleSelectStatement) {}
+  await(SimpleSelectStatement<$UsersTable, User> simpleSelectStatement) async {}
 }

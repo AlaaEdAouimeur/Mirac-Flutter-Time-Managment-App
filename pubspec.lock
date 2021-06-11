@@ -493,7 +493,7 @@ packages:
     source: hosted
     version: "2.0.0"
   pedantic:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: pedantic
       url: "https://pub.dartlang.org"
@@ -699,7 +699,7 @@ packages:
       name: syncfusion_flutter_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "19.1.65"
+    version: "19.1.67"
   syncfusion_flutter_datepicker:
     dependency: transitive
     description:
@@ -707,6 +707,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "19.1.65-beta"
+  syncfusion_flutter_gauges:
+    dependency: "direct main"
+    description:
+      name: syncfusion_flutter_gauges
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "19.1.67"
   synchronized:
     dependency: transitive
     description:

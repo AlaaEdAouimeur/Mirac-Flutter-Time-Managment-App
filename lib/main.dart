@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:moor/moor.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 
 import 'package:tyme/database/database.dart';
@@ -18,8 +16,8 @@ void main() {
   appNotifications.initPlugin();
 }
 
-AppDatabase db = new AppDatabase();
-AppNotifications appNotifications = new AppNotifications();
+AppDatabase db = AppDatabase();
+AppNotifications appNotifications = AppNotifications();
 
 class MyApp extends ConsumerWidget {
   @override
@@ -33,8 +31,8 @@ class MyApp extends ConsumerWidget {
           GlobalWidgetsLocalizations.delegate,
         ],
         supportedLocales: [
-          Locale("en"),
-          Locale("fr"),
+          Locale('en'),
+          Locale('fr'),
         ],
         navigatorKey: GlobalVariable.navState,
         debugShowCheckedModeBanner: false,

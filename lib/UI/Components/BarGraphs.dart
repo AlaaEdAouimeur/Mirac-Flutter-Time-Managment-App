@@ -55,18 +55,18 @@ class BarGraphsState extends State<BarGraphs> {
   }
 
   List<DateTime> getDates() {
-    List<DateTime> dateList = [];
+    var dateList = <DateTime>[];
 
-    for (int i = 1; i <= 7; i++) {
-      DateTime d = dateTimeRange.start.add(Duration(days: i));
+    for (var i = 1; i <= 7; i++) {
+      var d = dateTimeRange.start.add(Duration(days: i));
       dateList.add(d);
     }
     return dateList;
   }
 
   List<double> getData() {
-    List<double> values = [];
-    List<DateTime> _datesList = getDates();
+    var values = <double>[];
+    var _datesList = getDates();
     _datesList.forEach((date) {
       values.add(getCount(date));
     });

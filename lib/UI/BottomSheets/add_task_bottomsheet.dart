@@ -19,9 +19,8 @@ class AddTaskBottomSheet extends StatefulWidget {
 }
 
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
-  TextEditingController titleTextEditingController =
-      new TextEditingController();
-  TextEditingController noteTextEditingController = new TextEditingController();
+  TextEditingController titleTextEditingController = TextEditingController();
+  TextEditingController noteTextEditingController = TextEditingController();
   int _selectedColorIndex = 0;
   int _selectedCategoryIndex = 0;
   DateTime _selectedDateTime = DateTime.now();
@@ -33,7 +32,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void _handleDoneButton() {
-    final DateTime _taskDate = DateTime(
+    final _taskDate = DateTime(
         _selectedDateTime.year,
         _selectedDateTime.month,
         _selectedDateTime.day,
@@ -47,7 +46,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               category: _selectedCategoryIndex,
               note: noteTextEditingController.text,
               dueDate: _taskDate,
-              isChallenge: moor.Value(_isChallenge)),
+              isChallenge: moor.Value(_isChallenge),
+              score: moor.Value(
+                  scores[_selectedScoreindex == -1 ? 0 : _selectedScoreindex]
+                      .score)),
         )
         .then((value) =>
             db.getTask(value).then((task) => Navigator.of(context).pop(task)));
@@ -331,8 +333,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               ),
               ListTile(
                 leading: GestureDetector(
-                  child: Text(
-                      DateFormat.yMMMMd('fr_FR').format(widget.selectedDay)),
                   onTap: () async {
                     final date = await showDatePicker(
                         context: context,
@@ -343,9 +343,10 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       _selectedDateTime = date ?? DateTime.now();
                     });
                   },
+                  child: Text(
+                      DateFormat.yMMMMd('fr_FR').format(widget.selectedDay)),
                 ),
                 trailing: GestureDetector(
-                  child: Text(_selectedTimeOfDay.format(context)),
                   onTap: () async {
                     final date = await showTimePicker(
                       context: context,
@@ -355,6 +356,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                       _selectedTimeOfDay = date ?? TimeOfDay.now();
                     });
                   },
+                  child: Text(_selectedTimeOfDay.format(context)),
                 ),
               ),
               SizedBox(
