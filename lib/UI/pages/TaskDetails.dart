@@ -356,8 +356,9 @@ class _TaskDetailsState extends State<TaskDetails>
                                         todo.copyWith(isDone: !todo.isDone));
                                   });
                             });
-                      } else
+                      } else {
                         return Text('sad');
+                      }
                     },
                   ),
                 ),

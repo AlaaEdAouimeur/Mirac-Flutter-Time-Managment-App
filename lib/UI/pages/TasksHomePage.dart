@@ -29,10 +29,11 @@ class _TasksHomePageState extends State<TasksHomePage> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          if (_chipIndex == i)
+                          if (_chipIndex == i) {
                             _chipIndex = -1;
-                          else
+                          } else {
                             _chipIndex = i;
+                          }
                         });
                       },
                       child: Chip(
@@ -84,9 +85,9 @@ class _TasksHomePageState extends State<TasksHomePage> {
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 List<Task> _tasks = snapshot.data;
-                if (_tasks.isEmpty)
+                if (_tasks.isEmpty) {
                   return Text('Its empty here');
-                else
+                } else {
                   return ListView.builder(
                     itemCount: _tasks.length,
                     itemBuilder: (context, i) {
@@ -120,12 +121,14 @@ class _TasksHomePageState extends State<TasksHomePage> {
                       );
                     },
                   );
-              } else if (snapshot.connectionState == ConnectionState.waiting)
+                }
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
                 return SpinKitThreeBounce(
                   color: Colors.blue.shade700,
                 );
-              else
+              } else {
                 return Text('');
+              }
             },
           ),
         ),

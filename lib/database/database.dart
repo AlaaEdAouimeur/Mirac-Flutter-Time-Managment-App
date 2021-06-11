@@ -151,5 +151,5 @@ class AppDatabase extends _$AppDatabase {
       .insert(PastTasksCompanion(dateFinished: Value(DateTime.now())));
 
   Stream<List<PastTask>> getPastTasks() => select(pastTasks).watch();
-  await(SimpleSelectStatement<$UsersTable, User> simpleSelectStatement) async {}
+  // (SimpleSelectStatement<$UsersTable, User> simpleSelectStatement) {}
 }

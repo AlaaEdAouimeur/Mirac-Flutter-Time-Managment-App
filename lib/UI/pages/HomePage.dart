@@ -1,16 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/Components/calendar.dart';
 import 'package:tyme/UI/pages/TasksHomePage.dart';
 import 'package:tyme/UI/pages/UserHome.dart';
-import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
-import 'package:tyme/utils/local_notifications.dart';
 
 class HomePage extends StatefulWidget {
   @override

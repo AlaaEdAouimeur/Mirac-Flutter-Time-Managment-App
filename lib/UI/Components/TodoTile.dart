@@ -2,7 +2,6 @@ import 'package:animate_icons/animate_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tyme/database/database.dart';
-import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
 
@@ -24,7 +23,7 @@ class TodoTile extends StatefulWidget {
 
 class _TodoTileState extends State<TodoTile>
     with SingleTickerProviderStateMixin {
-  TextEditingController textEditingController = new TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
   AnimateIconController controller = AnimateIconController();
   bool isPlaying = false;
   bool isDone = false;

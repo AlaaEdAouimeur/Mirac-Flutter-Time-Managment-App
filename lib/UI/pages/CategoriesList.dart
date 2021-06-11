@@ -9,7 +9,7 @@ class CategoriesList extends StatefulWidget {
 }
 
 class _CategoriesListState extends State<CategoriesList> {
-  CustomPopupMenuController _controller = CustomPopupMenuController();
+  final CustomPopupMenuController _controller = CustomPopupMenuController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +37,6 @@ class _CategoriesListState extends State<CategoriesList> {
                   trailing: Padding(
                     padding: EdgeInsets.all(20),
                     child: CustomPopupMenu(
-                      child: Icon(Icons.more_vert),
                       menuBuilder: () => ClipRRect(
                         borderRadius: BorderRadius.circular(5),
                         child: Container(
@@ -90,6 +89,7 @@ class _CategoriesListState extends State<CategoriesList> {
                       pressType: PressType.singleClick,
                       verticalMargin: -10,
                       controller: _controller,
+                      child: Icon(Icons.more_vert),
                     ),
                   ));
             },

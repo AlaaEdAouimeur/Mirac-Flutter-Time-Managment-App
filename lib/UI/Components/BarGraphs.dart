@@ -15,7 +15,7 @@ class BarGraphs extends StatefulWidget {
 class BarGraphsState extends State<BarGraphs> {
   late List<PastTask> pastTasks;
 
-  DateTimeRange dateTimeRange = new DateTimeRange(
+  DateTimeRange dateTimeRange = DateTimeRange(
       start: DateTime.now().subtract(Duration(days: 7)), end: DateTime.now());
   @override
   void initState() {
@@ -246,10 +246,11 @@ class BarGraphsState extends State<BarGraphs> {
                     ),
                   ],
                 );
-              } else
+              } else {
                 return SpinKitThreeBounce(
                   color: Colors.blue,
                 );
+              }
             }),
       ),
     );

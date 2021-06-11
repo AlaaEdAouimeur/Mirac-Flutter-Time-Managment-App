@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:moor/moor.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/BottomSheets/add_task_bottomsheet.dart';
 import 'package:tyme/UI/Components/TaskTile.dart';
@@ -10,7 +8,6 @@ import 'package:tyme/UI/pages/TaskDetails.dart';
 
 import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
-import 'package:tyme/providers/tasksProvider.dart';
 
 import 'package:tyme/utils/dateUtils.dart';
 import 'package:tyme/utils/konstants.dart';
@@ -21,8 +18,8 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  DateTime _lastDay = kLastDay;
-  DateTime _firstDay = kFirstDay;
+  final DateTime _lastDay = kLastDay;
+  final DateTime _firstDay = kFirstDay;
   List<Task> tasks = [];
 
   CalendarFormat calendarFormat = CalendarFormat.month;
@@ -42,7 +39,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   void _showBottomSheet(BuildContext context) async {
-    Task task = await showModalBottomSheet<Task>(
+    var task = await showModalBottomSheet<Task>(
             isScrollControlled: true,
             isDismissible: false,
             clipBehavior: Clip.antiAlias,
@@ -65,7 +62,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             isChallenge: false,
             dueDate: DateTime.now(),
             reminderDate: DateTime.now());
-    Navigator.of(context)
+    await Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => TaskDetails(task: task)));
   }
 
@@ -78,13 +75,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               stream: db.watchAllTasks(),
               builder: (context, snapshot) {
                 if (snapshot.hasData || snapshot.data != null) {
-                  List<Task> _dayTasks = snapshot.data!
+                  var _dayTasks = snapshot.data!
                       .where((element) =>
                           element.dueDate.day == _selectedDay.day &&
                           element.dueDate.month == _selectedDay.month &&
                           element.dueDate.year == _selectedDay.year)
                       .toList();
-                  List<Task> _tasks = snapshot.data ?? [];
+                  var _tasks = snapshot.data ?? [];
                   return ListView(
                     primary: true,
                     children: [
@@ -93,11 +90,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                           Container(
                               height: 350,
                               child: Opacity(
+                                opacity: 0.5,
                                 child: Image.asset(
                                   'assets/bg.jpg',
                                   fit: BoxFit.fitHeight,
                                 ),
-                                opacity: 0.5,
                               )),
                           Opacity(
                             opacity: 1,
@@ -171,8 +168,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                       const SizedBox(height: 8.0),
                     ],
                   );
-                } else
+                } else {
                   return Text('not');
+                }
               });
         },
       ),
@@ -180,11 +178,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         onPressed: () {
           _showBottomSheet(context);
         },
+        backgroundColor: AppColors.trafficWhite,
         child: Icon(
           Icons.add,
           color: Colors.black,
         ),
-        backgroundColor: AppColors.trafficWhite,
       ),
     );
   }

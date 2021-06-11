@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tyme/UI/TaskResources.dart';
 
 import 'package:tyme/database/database.dart';
 
 class TasksProvider extends StateNotifier<List<Task>> {
   TasksProvider(List<Task> state) : super(state);
-  List<Task> _allTasks = [];
+  final List<Task> _allTasks = [];
 
-  get getTasks => state = _allTasks;
+  List<Task> get getTasks => state = _allTasks;
   List<Task> getTasksWhere(DateTime dateTime) {
     return _allTasks
         .where((element) =>

@@ -11,8 +11,8 @@ import 'package:tyme/utils/global_vars.dart';
 class AppNotifications {
   late var zone;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
-  var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
+      FlutterLocalNotificationsPlugin();
+  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'tyme', 'tyme', 'best time managment app',
       importance: Importance.max, priority: Priority.high);
   Future<void> setup() async {}
@@ -20,29 +20,29 @@ class AppNotifications {
   void initPlugin() async {
     tz.initializeTimeZones();
     zone = tz.getLocation('Africa/Algiers');
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('tom');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
+    var initializationSettingsAndroid = AndroidInitializationSettings('tom');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: onSelectNotification);
   }
 
   Future showNotification() async {
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    // ignore: unused_local_variable
+    var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
   }
 
   Future scheduleNotification(Task task) async {
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
         iOS: iOSPlatformChannelSpecifics);
-    flutterLocalNotificationsPlugin.zonedSchedule(
+    await flutterLocalNotificationsPlugin.zonedSchedule(
         task.id,
         'Task to be done',
         'Task ' + task.title + ' has some todos to be DONE',
@@ -64,7 +64,8 @@ class AppNotifications {
   }
 
   Future onSelectNotification(String? payload) async {
-    final Task _task = Task.fromJson(jsonDecode(payload ?? ''));
-    Navigator.of(GlobalVariable.navState.currentContext!).push(MaterialPageRoute(builder: (context) => TaskDetails(task: _task)));
+    final _task = Task.fromJson(jsonDecode(payload ?? ''));
+    await Navigator.of(GlobalVariable.navState.currentContext!).push(
+        MaterialPageRoute(builder: (context) => TaskDetails(task: _task)));
   }
 }

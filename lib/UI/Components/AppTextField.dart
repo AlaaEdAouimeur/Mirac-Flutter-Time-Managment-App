@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AppTextField extends StatelessWidget {
+class AppTextField extends StatefulWidget {
   final String hintText;
   final Color color;
   final TextEditingController textEditingController;
@@ -12,15 +12,22 @@ class AppTextField extends StatelessWidget {
       required this.isObligatory,
       required this.color})
       : super(key: key);
+
+  @override
+  _AppTextFieldState createState() => _AppTextFieldState();
+}
+
+class _AppTextFieldState extends State<AppTextField> {
   Color borderColor = Colors.black;
 
   String? _validate(String? string) {
-    if (isObligatory) {
-      if (string == null)
+    if (widget.isObligatory) {
+      if (string == null) {
         return 'this is a required field';
-      else {
-        if (string.isEmpty || string.length < 3)
+      } else {
+        if (string.isEmpty || string.length < 3) {
           return 'enter over 3 characters';
+        }
       }
     }
   }
@@ -31,16 +38,16 @@ class AppTextField extends StatelessWidget {
       padding: const EdgeInsets.all(6.0),
       child: TextFormField(
         validator: _validate,
-        controller: textEditingController,
+        controller: widget.textEditingController,
         decoration: InputDecoration(
-            focusColor: color,
-            errorText: _validate(textEditingController.text),
+            focusColor: widget.color,
+            errorText: _validate(widget.textEditingController.text),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12),
               ),
             ),
-            hintText: hintText,
+            hintText: widget.hintText,
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12),

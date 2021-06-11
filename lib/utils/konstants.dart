@@ -24,7 +24,7 @@ const List<String> colorsNames = [
 ];
 
 class AppColors {
-  static Color bleuGrey = Colors.blueGrey[100] ?? Color(0xff);
+  static Color bleuGrey = Colors.blueGrey[100] ?? Color(0x000000ff);
   static Color trafficWhite = Color(0xffedf6ff);
   static Color darkGrey = Color(0xff7a7e81);
 }
