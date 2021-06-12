@@ -265,6 +265,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_circle_color_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_circle_color_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -324,6 +331,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   graphs:
     dependency: transitive
     description:
@@ -345,6 +359,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  http:
+    dependency: transitive
+    description:
+      name: http
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.13.3"
   http_multi_server:
     dependency: transitive
     description:

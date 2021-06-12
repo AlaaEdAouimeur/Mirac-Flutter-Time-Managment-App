@@ -6,13 +6,16 @@ import 'package:tyme/UI/pages/TaskDetails.dart';
 import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/konstants.dart';
 
+// ignore: must_be_immutable
 class TaskTile extends StatelessWidget {
   final Task task;
 
-  const TaskTile({Key? key, required this.task}) : super(key: key);
-
+  TaskTile({Key? key, required this.task}) : super(key: key);
+  late Categorie categorie;
   @override
   Widget build(BuildContext context) {
+    // ignore: omit_local_variable_types
+    categorie = categories.firstWhere((element) => element.id == task.category);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
@@ -40,10 +43,10 @@ class TaskTile extends StatelessWidget {
           Container(
             height: 100,
             width: 5,
-            color: Color(categories[task.category].color),
+            color: Color(categorie.color),
           ),
           Container(
-            color: Color(categories[task.category].color).withOpacity(0.1),
+            color: Color(categorie.color).withOpacity(0.1),
             height: 100,
             width: MediaQuery.of(context).size.width * 3 / 4,
             child: Column(
@@ -68,15 +71,15 @@ class TaskTile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Icon(
-                        IconData(categories[task.category].iconData,
+                        IconData(categorie.iconData,
                             fontFamily: 'MaterialIcons'),
-                        color: Color(categories[task.category].color),
+                        color: Color(categorie.color),
                       ),
                       SizedBox(
                         width: 8,
                       ),
                       Text(
-                        categories[task.category].content,
+                        categorie.content,
                         style: TextStyle(
                             fontSize: 14, fontWeight: FontWeight.bold),
                       ),

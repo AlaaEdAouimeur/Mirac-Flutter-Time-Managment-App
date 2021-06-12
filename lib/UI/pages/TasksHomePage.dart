@@ -55,8 +55,9 @@ class _TasksHomePageState extends State<TasksHomePage> {
         Expanded(
             child: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => CategoriesList()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (context) => CategoriesList()))
+                .then((value) => setState(() {}));
           },
           child: Container(
             height: 50,
@@ -81,7 +82,7 @@ class _TasksHomePageState extends State<TasksHomePage> {
           child: StreamBuilder(
             stream: _chipIndex == -1
                 ? db.watchAllTasks()
-                : db.watchTasksByCategory(_chipIndex),
+                : db.watchTasksByCategory(categories[_chipIndex].id),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.hasData) {
                 List<Task> _tasks = snapshot.data;

@@ -1,5 +1,7 @@
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
+import 'package:tyme/UI/BottomSheets/add_category_bottomSheet.dart';
+import 'package:tyme/database/database.dart';
 import 'package:tyme/main.dart';
 import 'package:tyme/utils/konstants.dart';
 
@@ -13,6 +15,16 @@ class _CategoriesListState extends State<CategoriesList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => AddCategoryBottomSheet());
+        },
+        backgroundColor: AppColors.trafficWhite,
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -47,10 +59,11 @@ class _CategoriesListState extends State<CategoriesList> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    db.deleteCategory(categories[index]);
+                                    db
+                                        .deleteCategory(categories[index])
+                                        .then((value) => setState(() {}));
                                     _controller.hideMenu();
                                     print('pressed');
-                                    setState(() {});
                                   },
                                   child: Container(
                                     height: 40,

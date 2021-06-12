@@ -9,7 +9,7 @@ class Tasks extends Table {
 
   TextColumn get title => text().withLength(min: 1, max: 50)();
   IntColumn get category =>
-      integer().customConstraint('NULL REFERENCES categories(id)')();
+      integer().nullable().customConstraint('NULL REFERENCES categories(id)')();
   TextColumn get note => text()();
   BoolColumn get isDone => boolean().withDefault(Constant(false))();
   BoolColumn get isChallenge => boolean().withDefault(Constant(false))();
@@ -63,12 +63,23 @@ class AppDatabase extends _$AppDatabase {
   // Bump this when changing tables and columns.
   // Migrations will be covered in the next part.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        // Runs if the database has already been opened on the device with a lower version
+        onUpgrade: (migrator, from, to) async {
+          if (from == 2) {
+            await migrator.createTable(tasks);
+          }
+        },
+      );
 
   /////////////TASKS//////////////
   Future<List<Task>> getAllTasks() => select(tasks).get();
   Stream<List<Task>> watchAllTasks() => select(tasks).watch();
-
+  Future<List<Task>> getTaskByCategory(int c) =>
+      (select(tasks)..where((tbl) => tbl.category.equals(c))).get();
   Future insertTask(TasksCompanion task) {
     changePendingTasks(1);
     return into(tasks).insert(task);
@@ -104,12 +115,32 @@ class AppDatabase extends _$AppDatabase {
 ////////////////////////////////////////
 
   ///////////CATEGORIS////////
-  void insertCategories(Categorie c) => into(categories).insert(c);
+  void insertCategories(Categorie c) {
+    into(categories).insert(c);
+    initCategories();
+  }
+
   Future<List<Categorie>> getCategories() => select(categories).get();
-  void deleteCategory(Categorie c) async {
+  Future<void> initCategories() async {
+    await getCategories().then((value) {
+      if (value.isEmpty) {
+        k.categories = k.premadeCategories;
+        k.categories.forEach((element) => insertCategories(element));
+      } else {
+        k.categories = value;
+      }
+    });
+  }
+
+  Future<void> deleteCategory(Categorie c) async {
+    print(c);
+    print(await getAllTasks());
+
+    await (delete(tasks)..where((tbl) => tbl.category.equals(c.id))).go();
     await delete(categories).delete(c);
-    delete(tasks).where((tbl) => tbl.category.equals(c.id));
-    k.categories = await getCategories();
+    await getCategories().then((value) => value.isEmpty
+        ? k.categories = k.premadeCategories
+        : k.categories = value);
   }
   ////////////////////////////////
 

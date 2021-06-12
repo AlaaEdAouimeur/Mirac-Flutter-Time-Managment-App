@@ -34,7 +34,7 @@ List<Score> scores = [
   Score(title: 'Silver', score: 300),
   Score(title: 'Bronze', score: 100),
 ];
-List<Categorie> categories = [
+List<Categorie> premadeCategories = [
   Categorie(
     color: Colors.red.value,
     id: 0,
@@ -67,6 +67,7 @@ List<Categorie> categories = [
       content: 'Other',
       iconData: Icons.bookmark_outline_sharp.codePoint),
 ];
+List<Categorie> categories = [];
 
 class ItemModel {
   String title;

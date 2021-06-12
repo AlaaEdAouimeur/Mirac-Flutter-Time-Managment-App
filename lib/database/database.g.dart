@@ -901,8 +901,11 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   late final GeneratedIntColumn category = _constructCategory();
   GeneratedIntColumn _constructCategory() {
-    return GeneratedIntColumn('category', $tableName, false,
-        $customConstraints: 'NULL REFERENCES categories(id)');
+    return GeneratedIntColumn(
+      'category',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _noteMeta = const VerificationMeta('note');
