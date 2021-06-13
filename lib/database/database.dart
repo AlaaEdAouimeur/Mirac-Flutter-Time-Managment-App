@@ -115,9 +115,9 @@ class AppDatabase extends _$AppDatabase {
 ////////////////////////////////////////
 
   ///////////CATEGORIS////////
-  void insertCategories(Categorie c) {
-    into(categories).insert(c);
-    initCategories();
+  Future<void> insertCategories(CategoriesCompanion c) async {
+    await into(categories).insert(c);
+    await initCategories();
   }
 
   Future<List<Categorie>> getCategories() => select(categories).get();
@@ -125,7 +125,8 @@ class AppDatabase extends _$AppDatabase {
     await getCategories().then((value) {
       if (value.isEmpty) {
         k.categories = k.premadeCategories;
-        k.categories.forEach((element) => insertCategories(element));
+        k.categories
+            .forEach((element) => insertCategories(element.toCompanion(true)));
       } else {
         k.categories = value;
       }

@@ -7,12 +7,25 @@ List<ItemModel> items = [
   ItemModel(title: 'Mark as done', icondata: Icons.check),
 ];
 const List<Color> colorsList = [
-  Colors.red,
-  Colors.amber,
-  Colors.green,
-  Colors.grey,
-  Colors.yellow,
-  Colors.blue,
+  Color(0xfff05421),
+  Color(0xfff3c637),
+  Color(0xff82ad44),
+  Color(0xff2d9185),
+  Color(0xff3290e8),
+  Color(0xffb59bdc),
+  Color(0xfff4c7ab),
+];
+const List<IconData> icons = [
+  Icons.work,
+  Icons.family_restroom,
+  Icons.house,
+  Icons.local_play,
+  Icons.book,
+  Icons.bookmark_outline_sharp,
+  Icons.favorite,
+  Icons.add_shopping_cart_sharp,
+  Icons.car_rental,
+  Icons.airplanemode_active
 ];
 const List<String> colorsNames = [
   'red',

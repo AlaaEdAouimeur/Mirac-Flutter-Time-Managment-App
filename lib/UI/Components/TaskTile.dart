@@ -59,7 +59,7 @@ class TaskTile extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(
-                  height: 12,
+                  height: 10,
                 ),
                 Text(
                   task.note,

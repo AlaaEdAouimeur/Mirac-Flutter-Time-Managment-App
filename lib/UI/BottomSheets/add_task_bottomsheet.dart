@@ -32,27 +32,32 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void _handleDoneButton() {
-    final _taskDate = DateTime(
-        _selectedDateTime.year,
-        _selectedDateTime.month,
-        _selectedDateTime.day,
-        _selectedTimeOfDay.hour,
-        _selectedTimeOfDay.minute);
+    if (_formKey.currentState!.validate()) {
+      final _taskDate = DateTime(
+          _selectedDateTime.year,
+          _selectedDateTime.month,
+          _selectedDateTime.day,
+          _selectedTimeOfDay.hour,
+          _selectedTimeOfDay.minute);
 
-    db
-        .insertTask(
-          TasksCompanion.insert(
-              title: titleTextEditingController.text,
-              category: categories[_selectedCategoryIndex].id,
-              note: noteTextEditingController.text,
-              dueDate: _taskDate,
-              isChallenge: moor.Value(_isChallenge),
-              score: moor.Value(
-                  scores[_selectedScoreindex == -1 ? 0 : _selectedScoreindex]
-                      .score)),
-        )
-        .then((value) =>
-            db.getTask(value).then((task) => Navigator.of(context).pop(task)));
+      db
+          .insertTask(
+            TasksCompanion.insert(
+                title: titleTextEditingController.text,
+                category: categories[_selectedCategoryIndex].id,
+                note: noteTextEditingController.text,
+                dueDate: _taskDate,
+                isChallenge: moor.Value(_isChallenge),
+                score: moor.Value(
+                    scores[_selectedScoreindex == -1 ? 0 : _selectedScoreindex]
+                        .score)),
+          )
+          .then((value) => db
+              .getTask(value)
+              .then((task) => Navigator.of(context).pop(task)));
+    } else {
+      print('form not validated');
+    }
   }
 
   int _selectedScoreindex = -1;
@@ -304,6 +309,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     );
   }
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -315,86 +321,89 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
         child: SingleChildScrollView(
             child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              AppTextField(
-                hintText: 'What Task',
-                textEditingController: titleTextEditingController,
-                isObligatory: true,
-                color: Color(categories[_selectedCategoryIndex].color),
-              ),
-              AppTextField(
-                  hintText: 'Description',
-                  textEditingController: noteTextEditingController,
-                  isObligatory: false,
-                  color: Color(categories[_selectedCategoryIndex].color)),
-              SizedBox(
-                height: 8,
-              ),
-              ListTile(
-                leading: GestureDetector(
-                  onTap: () async {
-                    final date = await showDatePicker(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                AppTextField(
+                  hintText: 'What Task',
+                  textEditingController: titleTextEditingController,
+                  isObligatory: true,
+                  color: Color(categories[_selectedCategoryIndex].color),
+                ),
+                AppTextField(
+                    hintText: 'Description',
+                    textEditingController: noteTextEditingController,
+                    isObligatory: false,
+                    color: Color(categories[_selectedCategoryIndex].color)),
+                SizedBox(
+                  height: 8,
+                ),
+                ListTile(
+                  leading: GestureDetector(
+                    onTap: () async {
+                      final date = await showDatePicker(
+                          context: context,
+                          initialDate: widget.selectedDay,
+                          firstDate: DateTime(kToday.year, 1, 1),
+                          lastDate: DateTime(kToday.year, 31, 12));
+                      setState(() {
+                        _selectedDateTime = date ?? DateTime.now();
+                      });
+                    },
+                    child: Text(
+                        DateFormat.yMMMMd('fr_FR').format(widget.selectedDay)),
+                  ),
+                  trailing: GestureDetector(
+                    onTap: () async {
+                      final date = await showTimePicker(
                         context: context,
-                        initialDate: widget.selectedDay,
-                        firstDate: DateTime(kToday.year, 1, 1),
-                        lastDate: DateTime(kToday.year, 31, 12));
-                    setState(() {
-                      _selectedDateTime = date ?? DateTime.now();
-                    });
-                  },
-                  child: Text(
-                      DateFormat.yMMMMd('fr_FR').format(widget.selectedDay)),
+                        initialTime: TimeOfDay.now(),
+                      );
+                      setState(() {
+                        _selectedTimeOfDay = date ?? TimeOfDay.now();
+                      });
+                    },
+                    child: Text(_selectedTimeOfDay.format(context)),
+                  ),
                 ),
-                trailing: GestureDetector(
-                  onTap: () async {
-                    final date = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    setState(() {
-                      _selectedTimeOfDay = date ?? TimeOfDay.now();
-                    });
-                  },
-                  child: Text(_selectedTimeOfDay.format(context)),
+                SizedBox(
+                  height: 8,
                 ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                // width: MediaQuery.of(context).size.width,
-                //height: 100,
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        child: _categoryWidget(),
+                Container(
+                  // width: MediaQuery.of(context).size.width,
+                  //height: 100,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: _categoryWidget(),
+                        ),
                       ),
-                    ),
-                    VerticalDivider(
-                      color: Colors.amber,
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(child: _isChallengeWidget()),
-                    )
-                  ],
+                      VerticalDivider(
+                        color: Colors.amber,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(child: _isChallengeWidget()),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              ElevatedButton.icon(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.resolveWith(
-                          (states) =>
-                              Color(categories[_selectedCategoryIndex].color))),
-                  onPressed: _handleDoneButton,
-                  icon: Icon(Icons.done),
-                  label: Text('Done'))
-            ],
+                SizedBox(
+                  height: 8,
+                ),
+                ElevatedButton.icon(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith(
+                            (states) => Color(
+                                categories[_selectedCategoryIndex].color))),
+                    onPressed: _handleDoneButton,
+                    icon: Icon(Icons.done),
+                    label: Text('Done'))
+              ],
+            ),
           ),
         )),
       ),

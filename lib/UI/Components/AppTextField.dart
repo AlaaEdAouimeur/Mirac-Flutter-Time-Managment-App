@@ -41,7 +41,7 @@ class _AppTextFieldState extends State<AppTextField> {
         controller: widget.textEditingController,
         decoration: InputDecoration(
             focusColor: widget.color,
-            errorText: _validate(widget.textEditingController.text),
+            //  errorText: _validate(widget.textEditingController.text),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(12),

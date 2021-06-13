@@ -40,30 +40,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   void _showBottomSheet(BuildContext context) async {
     var task = await showModalBottomSheet<Task>(
-            isScrollControlled: true,
-            isDismissible: false,
-            clipBehavior: Clip.antiAlias,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32), topRight: Radius.circular(32)),
-            ),
-            context: context,
-            builder: (context) {
-              return AddTaskBottomSheet(
-                selectedDay: _selectedDay,
-              );
-            }) ??
-        Task(
-            id: 0,
-            title: 'title',
-            category: 1,
-            note: 'note',
-            isDone: false,
-            isChallenge: false,
-            dueDate: DateTime.now(),
-            reminderDate: DateTime.now());
-    await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => TaskDetails(task: task)));
+        isScrollControlled: true,
+        isDismissible: true,
+        clipBehavior: Clip.antiAlias,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+        ),
+        context: context,
+        builder: (context) {
+          return AddTaskBottomSheet(
+            selectedDay: _selectedDay,
+          );
+        });
+    if (task != null) {
+      await Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => TaskDetails(task: task)));
+    }
   }
 
   @override
