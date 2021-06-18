@@ -58,7 +58,8 @@ class _ScoreGaugeState extends State<ScoreGauge> {
                               Container(
                                 width: 180,
                                 child: Center(
-                                  child: Text("Alaa's Score",
+                                  child: Text(
+                                      "${snapshot.data!.firstName}'s Score",
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(

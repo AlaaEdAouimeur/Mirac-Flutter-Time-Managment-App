@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
+import 'package:tyme/UI/pages/OnBoardingScreen.dart';
 
 import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/AppLocalizations.dart';
@@ -13,13 +15,20 @@ import 'package:tyme/utils/local_notifications.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  getCategories().then((v) {
-    runApp(ProviderScope(
-      child: MyApp(),
-    ));
+  isUserNew().then((value) => getCategories().then((v) {
+        runApp(ProviderScope(
+          child: MyApp(),
+        ));
 
-    appNotifications.initPlugin();
-  });
+        appNotifications.initPlugin();
+      }));
+}
+
+bool _isUserNew = true;
+Future<void> isUserNew() async {
+  var prefs = await SharedPreferences.getInstance();
+  _isUserNew = prefs.getBool('isNew') ?? true;
+  print(_isUserNew);
 }
 
 Future<void> getCategories() async {
@@ -48,9 +57,9 @@ class MyApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          textTheme: GoogleFonts.rubikTextTheme(
+          /* textTheme: GoogleFonts.rubikTextTheme(
             Theme.of(context).textTheme,
-          ),
+          ),*/
           primaryColor: MaterialColor(AppColors.trafficWhite.value, {
             100: AppColors.trafficWhite,
             50: AppColors.trafficWhite,
@@ -64,6 +73,7 @@ class MyApp extends ConsumerWidget {
             900: AppColors.trafficWhite,
           }),
         ),
-        home: SafeArea(child: Material(child: HomePage())));
+        home: SafeArea(
+            child: Material(child: _isUserNew ? OnBoardScreen() : HomePage())));
   }
 }

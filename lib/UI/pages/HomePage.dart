@@ -18,38 +18,40 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  int _index = 0;
+  int _index = 1;
   CalendarFormat cf = CalendarFormat.month;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: SnakeNavigationBar.color(
-        behaviour: SnakeBarBehaviour.pinned,
-        snakeShape: SnakeShape.indicator,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        snakeViewColor: AppColors.trafficWhite,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: AppColors.darkGrey.withOpacity(0.6),
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        currentIndex: _index,
-        onTap: (i) {
-          setState(() {
-            _index = i;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.list_alt_rounded), label: 'Tasks'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today_rounded), label: 'Calendar'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
-        ],
-      ),
-      body: IndexedStack(
-        index: _index,
-        children: [TasksHomePage(), CalendarWidget(), UserHome()],
+    return SafeArea(
+      child: Scaffold(
+        bottomNavigationBar: SnakeNavigationBar.color(
+          behaviour: SnakeBarBehaviour.pinned,
+          snakeShape: SnakeShape.indicator,
+          elevation: 0,
+          backgroundColor: Colors.white,
+          snakeViewColor: AppColors.trafficWhite,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: AppColors.darkGrey.withOpacity(0.6),
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          currentIndex: _index,
+          onTap: (i) {
+            setState(() {
+              _index = i;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.list_alt_rounded), label: 'Tasks'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.calendar_today_rounded), label: 'Calendar'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
+          ],
+        ),
+        body: IndexedStack(
+          index: _index,
+          children: [TasksHomePage(), CalendarWidget(), UserHome()],
+        ),
       ),
     );
   }

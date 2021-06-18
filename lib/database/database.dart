@@ -163,7 +163,8 @@ class AppDatabase extends _$AppDatabase {
   Future<void> changeDoneTasks(int x) async {
     var _user = await select(users).getSingle();
     var temp1 = _user.completedTasks + x;
-    await update(users).replace(_user.copyWith(completedTasks: temp1));
+    // ignore: unawaited_futures
+    update(users).replace(_user.copyWith(completedTasks: temp1));
   }
 
   Future<void> changePendingTasks(int x) async {

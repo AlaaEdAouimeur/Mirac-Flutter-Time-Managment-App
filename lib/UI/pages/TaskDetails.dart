@@ -417,16 +417,25 @@ class _TaskDetailsState extends State<TaskDetails>
     );
   }
 
+  void handleTasksStates() async {
+    if (isDone && widget.task.isDone) {
+      print('TRUE TRUE DO NOTHING');
+    } else if (!isDone && !widget.task.isDone) {
+      print('FALSE FALSE DO NOTHING');
+    } else if (isDone && !widget.task.isDone) {
+      print('first');
+      await db.changeDoneTasks(1);
+      await db.changePendingTasks(-1);
+    } else if (!isDone && widget.task.isDone) {
+      print('second');
+      await db.changeDoneTasks(-1).then((value) => db.changePendingTasks(1));
+    }
+  }
+
   @override
   void dispose() {
-    if (isDone == widget.task.isDone) {
-    } else if (isDone && !widget.task.isDone) {
-      db.changeDoneTasks(1).then((value) => db.changePendingTasks(-1));
-    } else {
-      db.changeDoneTasks(-1).then((value) => db.changePendingTasks(1));
-    }
-
-    if (isDone && !widget.task.isDone) {
+    handleTasksStates();
+    if (isDone && !widget.task.isDone && widget.task.isChallenge) {
       db.insertPastTask();
       db.updateTask(widget.task.copyWith(
           note: textEditingController.text,
