@@ -80,6 +80,38 @@ List<Categorie> premadeCategories = [
       content: 'Other',
       iconData: Icons.bookmark_outline_sharp.codePoint),
 ];
+List<Quote> premadeQuotes = [
+  Quote(
+      id: 0,
+      isChecked: true,
+      content: 'Ready for a new life',
+      author: 'Sylvia Plath'),
+  Quote(
+      id: 0,
+      isChecked: true,
+      content:
+          "Opportunity doesn't make appointments, you have to be ready when it arrives",
+      author: 'Tim Fargo'),
+  Quote(
+      id: 0,
+      isChecked: true,
+      content:
+          'Always remember that negative feelings and undue grudges will swallow you up, so ',
+      author: ' Dr Prem Jagyasi'),
+  Quote(
+      id: 0,
+      isChecked: true,
+      content:
+          'One must always keep the tools of statecraft sharp and ready. Power and fear – sharp and ready',
+      author: ' Frank Herbert'),
+  Quote(
+      id: 0,
+      isChecked: true,
+      content:
+          'If you make peace without defense power,then you should be really ready to be ruled.',
+      author: 'Toba Beta'),
+];
+List<Quote> quotes = [];
 List<Categorie> categories = [];
 
 class ItemModel {

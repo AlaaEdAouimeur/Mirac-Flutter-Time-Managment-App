@@ -56,6 +56,7 @@ class _OnBoardScreenState extends State<OnBoardScreen> {
                 ])),
             SizedBox(height: 16),
             AppTextField(
+              maxLines: 1,
               hintText: 'What is yours ?',
               textEditingController: textEditingController,
               isObligatory: true,

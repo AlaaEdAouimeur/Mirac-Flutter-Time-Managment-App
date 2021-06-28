@@ -14,11 +14,10 @@ class PastTask extends DataClass implements Insertable<PastTask> {
   factory PastTask.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return PastTask(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      dateFinished: dateTimeType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      dateFinished: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}date_finished'])!,
     );
   }
@@ -70,7 +69,7 @@ class PastTask extends DataClass implements Insertable<PastTask> {
   @override
   int get hashCode => $mrjf($mrjc(id.hashCode, dateFinished.hashCode));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is PastTask &&
           other.id == this.id &&
@@ -183,8 +182,8 @@ class $PastTasksTable extends PastTasks
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   PastTask map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return PastTask.fromData(data, _db, prefix: effectivePrefix);
+    return PastTask.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -210,18 +209,18 @@ class User extends DataClass implements Insertable<User> {
   factory User.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
     return User(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      score: intType.mapFromDatabaseResponse(data['${effectivePrefix}score'])!,
-      firstName: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      score: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}score'])!,
+      firstName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name'])!,
-      lastName: stringType
+      lastName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_name'])!,
-      completedTasks: intType
+      completedTasks: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}completed_tasks'])!,
-      pendingTasks: intType
+      pendingTasks: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}pending_tasks'])!,
     );
   }
@@ -311,7 +310,7 @@ class User extends DataClass implements Insertable<User> {
               $mrjc(lastName.hashCode,
                   $mrjc(completedTasks.hashCode, pendingTasks.hashCode))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is User &&
           other.id == this.id &&
@@ -525,8 +524,8 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   User map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return User.fromData(data, _db, prefix: effectivePrefix);
+    return User.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -538,7 +537,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
-  final int category;
+  final int? category;
   final String note;
   final bool isDone;
   final bool isChallenge;
@@ -549,7 +548,7 @@ class Task extends DataClass implements Insertable<Task> {
   Task(
       {required this.id,
       required this.title,
-      required this.category,
+      this.category,
       required this.note,
       required this.isDone,
       required this.isChallenge,
@@ -560,27 +559,26 @@ class Task extends DataClass implements Insertable<Task> {
   factory Task.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
-    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Task(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      title:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}title'])!,
-      category:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}category'])!,
-      note: stringType.mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
-      isDone:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
-      isChallenge: boolType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      title: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}title'])!,
+      category: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}category']),
+      note: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
+      isDone: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
+      isChallenge: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_challenge'])!,
-      score: intType.mapFromDatabaseResponse(data['${effectivePrefix}score']),
-      completedTasks: intType
+      score: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}score']),
+      completedTasks: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}completed_tasks']),
-      dueDate: dateTimeType
+      dueDate: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}due_date'])!,
-      reminderDate: dateTimeType
+      reminderDate: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}reminder_date']),
     );
   }
@@ -589,7 +587,9 @@ class Task extends DataClass implements Insertable<Task> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
-    map['category'] = Variable<int>(category);
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<int?>(category);
+    }
     map['note'] = Variable<String>(note);
     map['is_done'] = Variable<bool>(isDone);
     map['is_challenge'] = Variable<bool>(isChallenge);
@@ -610,7 +610,9 @@ class Task extends DataClass implements Insertable<Task> {
     return TasksCompanion(
       id: Value(id),
       title: Value(title),
-      category: Value(category),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
       note: Value(note),
       isDone: Value(isDone),
       isChallenge: Value(isChallenge),
@@ -632,7 +634,7 @@ class Task extends DataClass implements Insertable<Task> {
     return Task(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
-      category: serializer.fromJson<int>(json['category']),
+      category: serializer.fromJson<int?>(json['category']),
       note: serializer.fromJson<String>(json['note']),
       isDone: serializer.fromJson<bool>(json['isDone']),
       isChallenge: serializer.fromJson<bool>(json['isChallenge']),
@@ -648,7 +650,7 @@ class Task extends DataClass implements Insertable<Task> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
-      'category': serializer.toJson<int>(category),
+      'category': serializer.toJson<int?>(category),
       'note': serializer.toJson<String>(note),
       'isDone': serializer.toJson<bool>(isDone),
       'isChallenge': serializer.toJson<bool>(isChallenge),
@@ -719,7 +721,7 @@ class Task extends DataClass implements Insertable<Task> {
                                   $mrjc(dueDate.hashCode,
                                       reminderDate.hashCode))))))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Task &&
           other.id == this.id &&
@@ -737,7 +739,7 @@ class Task extends DataClass implements Insertable<Task> {
 class TasksCompanion extends UpdateCompanion<Task> {
   final Value<int> id;
   final Value<String> title;
-  final Value<int> category;
+  final Value<int?> category;
   final Value<String> note;
   final Value<bool> isDone;
   final Value<bool> isChallenge;
@@ -760,7 +762,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
-    required int category,
+    this.category = const Value.absent(),
     required String note,
     this.isDone = const Value.absent(),
     this.isChallenge = const Value.absent(),
@@ -769,13 +771,12 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required DateTime dueDate,
     this.reminderDate = const Value.absent(),
   })  : title = Value(title),
-        category = Value(category),
         note = Value(note),
         dueDate = Value(dueDate);
   static Insertable<Task> custom({
     Expression<int>? id,
     Expression<String>? title,
-    Expression<int>? category,
+    Expression<int?>? category,
     Expression<String>? note,
     Expression<bool>? isDone,
     Expression<bool>? isChallenge,
@@ -801,7 +802,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   TasksCompanion copyWith(
       {Value<int>? id,
       Value<String>? title,
-      Value<int>? category,
+      Value<int?>? category,
       Value<String>? note,
       Value<bool>? isDone,
       Value<bool>? isChallenge,
@@ -833,7 +834,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       map['title'] = Variable<String>(title.value);
     }
     if (category.present) {
-      map['category'] = Variable<int>(category.value);
+      map['category'] = Variable<int?>(category.value);
     }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
@@ -901,11 +902,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   late final GeneratedIntColumn category = _constructCategory();
   GeneratedIntColumn _constructCategory() {
-    return GeneratedIntColumn(
-      'category',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('category', $tableName, true,
+        $customConstraints: 'NULL REFERENCES categories(id)');
   }
 
   final VerificationMeta _noteMeta = const VerificationMeta('note');
@@ -1018,8 +1016,6 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     if (data.containsKey('category')) {
       context.handle(_categoryMeta,
           category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
-    } else if (isInserting) {
-      context.missing(_categoryMeta);
     }
     if (data.containsKey('note')) {
       context.handle(
@@ -1066,8 +1062,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Task map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Task.fromData(data, _db, prefix: effectivePrefix);
+    return Task.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -1089,17 +1085,15 @@ class Todo extends DataClass implements Insertable<Todo> {
   factory Todo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return Todo(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      content: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      content: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
-      isDone:
-          boolType.mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
-      taskId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}task_id'])!,
+      isDone: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_done'])!,
+      taskId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}task_id'])!,
     );
   }
   @override
@@ -1163,7 +1157,7 @@ class Todo extends DataClass implements Insertable<Todo> {
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(content.hashCode, $mrjc(isDone.hashCode, taskId.hashCode))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Todo &&
           other.id == this.id &&
@@ -1188,7 +1182,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     required String content,
     this.isDone = const Value.absent(),
     required int taskId,
-  })   : content = Value(content),
+  })  : content = Value(content),
         taskId = Value(taskId);
   static Insertable<Todo> custom({
     Expression<int>? id,
@@ -1322,8 +1316,8 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Todo map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Todo.fromData(data, _db, prefix: effectivePrefix);
+    return Todo.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
@@ -1345,14 +1339,14 @@ class Categorie extends DataClass implements Insertable<Categorie> {
   factory Categorie.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
     return Categorie(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      color: intType.mapFromDatabaseResponse(data['${effectivePrefix}color'])!,
-      iconData:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}icon_data'])!,
-      content: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      color: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}color'])!,
+      iconData: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}icon_data'])!,
+      content: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
     );
   }
@@ -1418,7 +1412,7 @@ class Categorie extends DataClass implements Insertable<Categorie> {
   int get hashCode => $mrjf($mrjc(id.hashCode,
       $mrjc(color.hashCode, $mrjc(iconData.hashCode, content.hashCode))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Categorie &&
           other.id == this.id &&
@@ -1575,13 +1569,271 @@ class $CategoriesTable extends Categories
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
   Categorie map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Categorie.fromData(data, _db, prefix: effectivePrefix);
+    return Categorie.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
   }
 
   @override
   $CategoriesTable createAlias(String alias) {
     return $CategoriesTable(_db, alias);
+  }
+}
+
+class Quote extends DataClass implements Insertable<Quote> {
+  final int id;
+  final bool isChecked;
+  final String content;
+  final String? author;
+  Quote(
+      {required this.id,
+      required this.isChecked,
+      required this.content,
+      this.author});
+  factory Quote.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    return Quote(
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      isChecked: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_checked'])!,
+      content: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}content'])!,
+      author: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}author']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['is_checked'] = Variable<bool>(isChecked);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || author != null) {
+      map['author'] = Variable<String?>(author);
+    }
+    return map;
+  }
+
+  QuotesCompanion toCompanion(bool nullToAbsent) {
+    return QuotesCompanion(
+      id: Value(id),
+      isChecked: Value(isChecked),
+      content: Value(content),
+      author:
+          author == null && nullToAbsent ? const Value.absent() : Value(author),
+    );
+  }
+
+  factory Quote.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return Quote(
+      id: serializer.fromJson<int>(json['id']),
+      isChecked: serializer.fromJson<bool>(json['isChecked']),
+      content: serializer.fromJson<String>(json['content']),
+      author: serializer.fromJson<String?>(json['author']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'isChecked': serializer.toJson<bool>(isChecked),
+      'content': serializer.toJson<String>(content),
+      'author': serializer.toJson<String?>(author),
+    };
+  }
+
+  Quote copyWith({int? id, bool? isChecked, String? content, String? author}) =>
+      Quote(
+        id: id ?? this.id,
+        isChecked: isChecked ?? this.isChecked,
+        content: content ?? this.content,
+        author: author ?? this.author,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('Quote(')
+          ..write('id: $id, ')
+          ..write('isChecked: $isChecked, ')
+          ..write('content: $content, ')
+          ..write('author: $author')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(isChecked.hashCode, $mrjc(content.hashCode, author.hashCode))));
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Quote &&
+          other.id == this.id &&
+          other.isChecked == this.isChecked &&
+          other.content == this.content &&
+          other.author == this.author);
+}
+
+class QuotesCompanion extends UpdateCompanion<Quote> {
+  final Value<int> id;
+  final Value<bool> isChecked;
+  final Value<String> content;
+  final Value<String?> author;
+  const QuotesCompanion({
+    this.id = const Value.absent(),
+    this.isChecked = const Value.absent(),
+    this.content = const Value.absent(),
+    this.author = const Value.absent(),
+  });
+  QuotesCompanion.insert({
+    this.id = const Value.absent(),
+    this.isChecked = const Value.absent(),
+    required String content,
+    this.author = const Value.absent(),
+  }) : content = Value(content);
+  static Insertable<Quote> custom({
+    Expression<int>? id,
+    Expression<bool>? isChecked,
+    Expression<String>? content,
+    Expression<String?>? author,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (isChecked != null) 'is_checked': isChecked,
+      if (content != null) 'content': content,
+      if (author != null) 'author': author,
+    });
+  }
+
+  QuotesCompanion copyWith(
+      {Value<int>? id,
+      Value<bool>? isChecked,
+      Value<String>? content,
+      Value<String?>? author}) {
+    return QuotesCompanion(
+      id: id ?? this.id,
+      isChecked: isChecked ?? this.isChecked,
+      content: content ?? this.content,
+      author: author ?? this.author,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (isChecked.present) {
+      map['is_checked'] = Variable<bool>(isChecked.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String?>(author.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('QuotesCompanion(')
+          ..write('id: $id, ')
+          ..write('isChecked: $isChecked, ')
+          ..write('content: $content, ')
+          ..write('author: $author')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $QuotesTable extends Quotes with TableInfo<$QuotesTable, Quote> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $QuotesTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedIntColumn id = _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _isCheckedMeta = const VerificationMeta('isChecked');
+  @override
+  late final GeneratedBoolColumn isChecked = _constructIsChecked();
+  GeneratedBoolColumn _constructIsChecked() {
+    return GeneratedBoolColumn('is_checked', $tableName, false,
+        defaultValue: Constant(true));
+  }
+
+  final VerificationMeta _contentMeta = const VerificationMeta('content');
+  @override
+  late final GeneratedTextColumn content = _constructContent();
+  GeneratedTextColumn _constructContent() {
+    return GeneratedTextColumn('content', $tableName, false,
+        minTextLength: 0, maxTextLength: 50);
+  }
+
+  final VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedTextColumn author = _constructAuthor();
+  GeneratedTextColumn _constructAuthor() {
+    return GeneratedTextColumn(
+      'author',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [id, isChecked, content, author];
+  @override
+  $QuotesTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'quotes';
+  @override
+  final String actualTableName = 'quotes';
+  @override
+  VerificationContext validateIntegrity(Insertable<Quote> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('is_checked')) {
+      context.handle(_isCheckedMeta,
+          isChecked.isAcceptableOrUnknown(data['is_checked']!, _isCheckedMeta));
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(_authorMeta,
+          author.isAcceptableOrUnknown(data['author']!, _authorMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Quote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    return Quote.fromData(data, _db,
+        prefix: tablePrefix != null ? '$tablePrefix.' : null);
+  }
+
+  @override
+  $QuotesTable createAlias(String alias) {
+    return $QuotesTable(_db, alias);
   }
 }
 
@@ -1592,9 +1844,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TasksTable tasks = $TasksTable(this);
   late final $TodosTable todos = $TodosTable(this);
   late final $CategoriesTable categories = $CategoriesTable(this);
+  late final $QuotesTable quotes = $QuotesTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [pastTasks, users, tasks, todos, categories];
+      [pastTasks, users, tasks, todos, categories, quotes];
 }

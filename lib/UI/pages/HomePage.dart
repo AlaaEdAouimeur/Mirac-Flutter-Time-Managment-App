@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_snake_navigationbar/flutter_snake_navigationbar.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tyme/UI/Components/calendar.dart';
+import 'package:tyme/UI/pages/QuotesPage.dart';
 import 'package:tyme/UI/pages/TasksHomePage.dart';
 import 'package:tyme/UI/pages/UserHome.dart';
 import 'package:tyme/utils/konstants.dart';
@@ -18,39 +19,58 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  int _index = 1;
+  int _bottomNavIndex = 2;
   CalendarFormat cf = CalendarFormat.month;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: SnakeNavigationBar.color(
-          behaviour: SnakeBarBehaviour.pinned,
-          snakeShape: SnakeShape.indicator,
-          elevation: 0,
+        bottomNavigationBar: GNav(
+          tabMargin: EdgeInsets.all(2),
+          // rippleColor: Colors.grey[300],
+          //  hoverColor: Colors.grey[100],
+          gap: 8,
+          activeColor: Colors.blue,
+          iconSize: 24,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          duration: Duration(milliseconds: 400),
+          tabBackgroundColor: AppColors.trafficWhite,
+          color: Colors.black,
           backgroundColor: Colors.white,
-          snakeViewColor: AppColors.trafficWhite,
-          selectedItemColor: Colors.black,
-          unselectedItemColor: AppColors.darkGrey.withOpacity(0.6),
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          currentIndex: _index,
-          onTap: (i) {
-            setState(() {
-              _index = i;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list_alt_rounded), label: 'Tasks'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_today_rounded), label: 'Calendar'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
+          selectedIndex: _bottomNavIndex,
+          onTabChange: (index) => setState(() => _bottomNavIndex = index),
+          //onTap: (i) => setState(() => _bottomNavIndex = i),
+          tabs: [
+            /// Home
+            GButton(
+              icon: Icons.list_alt_rounded,
+              text: 'Tasks',
+            ),
+
+            /// Likes
+            GButton(
+              icon: Icons.question_answer_rounded,
+              text: 'Quote',
+            ),
+            GButton(
+              icon: Icons.calendar_today_rounded,
+              text: 'Tasks',
+            ),
+
+            GButton(
+              icon: Icons.person,
+              text: 'Me',
+            ),
           ],
         ),
         body: IndexedStack(
-          index: _index,
-          children: [TasksHomePage(), CalendarWidget(), UserHome()],
+          index: _bottomNavIndex,
+          children: [
+            TasksHomePage(),
+            QuotesPage(),
+            CalendarWidget(),
+            UserHome()
+          ],
         ),
       ),
     );

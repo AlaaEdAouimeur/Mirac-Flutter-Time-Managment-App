@@ -44,7 +44,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
           .insertTask(
             TasksCompanion.insert(
                 title: titleTextEditingController.text,
-                category: categories[_selectedCategoryIndex].id,
+                category: moor.Value(categories[_selectedCategoryIndex].id),
                 note: noteTextEditingController.text,
                 dueDate: _taskDate,
                 isChallenge: moor.Value(_isChallenge),
@@ -326,12 +326,14 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             child: Column(
               children: [
                 AppTextField(
+                  maxLines: 1,
                   hintText: 'What Task',
                   textEditingController: titleTextEditingController,
                   isObligatory: true,
                   color: Color(categories[_selectedCategoryIndex].color),
                 ),
                 AppTextField(
+                    maxLines: 3,
                     hintText: 'Description',
                     textEditingController: noteTextEditingController,
                     isObligatory: false,

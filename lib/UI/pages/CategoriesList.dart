@@ -64,7 +64,6 @@ class _CategoriesListState extends State<CategoriesList> {
                                       .deleteCategory(categories[index])
                                       .then((value) => setState(() {}));
                                   _controller.hideMenu();
-                                  print('pressed');
                                 },
                                 child: Container(
                                   height: 40,

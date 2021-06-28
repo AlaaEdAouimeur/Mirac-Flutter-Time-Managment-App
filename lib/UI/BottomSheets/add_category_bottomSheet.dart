@@ -133,7 +133,8 @@ class _AddCategoryBottomSheetState extends State<AddCategoryBottomSheet> {
                     height: 8,
                   ),
                   AppTextField(
-                    hintText: 'What Task',
+                    hintText: 'category name',
+                    maxLines: 1,
                     textEditingController: titleTextEditingController,
                     isObligatory: true,
                     //  color: Color(categories[_selectedCategoryIndex].color),
@@ -218,27 +219,6 @@ class _AddCategoryBottomSheetState extends State<AddCategoryBottomSheet> {
                             ),
                           ),
                         ),
-
-                        /*Center(
-                                child: Text(
-                                  'Done',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: selectedColorIndex == -1
-                                          ? Colors.blue.shade200
-                                          : colorsList[selectedColorIndex]),
-                                ),
-                              ),*/
-                        /*  ElevatedButton.icon(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.resolveWith(
-                                    (states) => selectedColorIndex == -1
-                                        ? Colors.blue.shade200
-                                        : colorsList[selectedColorIndex])),
-                            onPressed: _handleDoneButton,
-                            icon: Icon(Icons.done),
-                            label: Text('Done'))*/
                       ],
                     ),
                   )

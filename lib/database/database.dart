@@ -40,6 +40,13 @@ class Categories extends Table {
   TextColumn get content => text().withLength(min: 2, max: 50)();
 }
 
+class Quotes extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  BoolColumn get isChecked => boolean().withDefault(Constant(true))();
+  TextColumn get content => text().withLength(min: 0, max: 50)();
+  TextColumn get author => text().nullable()();
+}
+
 class Users extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get score => integer().withDefault(Constant(0))();
@@ -49,7 +56,7 @@ class Users extends Table {
   IntColumn get pendingTasks => integer().withDefault(Constant(0))();
 }
 
-@UseMoor(tables: [PastTasks, Users, Tasks, Todos, Categories])
+@UseMoor(tables: [PastTasks, Users, Tasks, Todos, Categories, Quotes])
 // _$AppDatabase is the name of the generated class
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
@@ -63,7 +70,7 @@ class AppDatabase extends _$AppDatabase {
   // Bump this when changing tables and columns.
   // Migrations will be covered in the next part.
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -121,6 +128,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<List<Categorie>> getCategories() => select(categories).get();
+
   Future<void> initCategories() async {
     await getCategories().then((value) {
       if (value.isEmpty) {
@@ -129,6 +137,18 @@ class AppDatabase extends _$AppDatabase {
             .forEach((element) => insertCategories(element.toCompanion(true)));
       } else {
         k.categories = value;
+      }
+    });
+  }
+
+  Future<void> initQuotes() async {
+    await getQuotes().then((value) {
+      if (value.isEmpty) {
+        k.categories = k.premadeCategories;
+        k.categories
+            .forEach((element) => insertCategories(element.toCompanion(true)));
+      } else {
+        k.quotes = value;
       }
     });
   }
@@ -184,5 +204,17 @@ class AppDatabase extends _$AppDatabase {
       .insert(PastTasksCompanion(dateFinished: Value(DateTime.now())));
 
   Stream<List<PastTask>> getPastTasks() => select(pastTasks).watch();
-  // (SimpleSelectStatement<$UsersTable, User> simpleSelectStatement) {}
+////////////////////////////////////////
+
+//////QUOTES///////////////
+  Stream<List<Quote>> watchQuotes() => select(quotes).watch();
+  Future<List<Quote>> getQuotes() => select(quotes).get();
+  Future insertQuote(QuotesCompanion q) async {
+    await into(quotes).insert(q);
+    await initQuotes();
+  }
+
+  Future updateQuote(QuotesCompanion q) => update(quotes).replace(q);
+  Future deleteQuote(QuotesCompanion q) => delete(quotes).delete(q);
+///////////////////////
 }

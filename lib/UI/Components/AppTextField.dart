@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppTextField extends StatefulWidget {
   final String hintText;
   final Color color;
+  final int maxLines;
   final TextEditingController textEditingController;
   final bool isObligatory;
   AppTextField(
@@ -10,6 +11,7 @@ class AppTextField extends StatefulWidget {
       required this.hintText,
       required this.textEditingController,
       required this.isObligatory,
+      required this.maxLines,
       required this.color})
       : super(key: key);
 
@@ -38,6 +40,8 @@ class _AppTextFieldState extends State<AppTextField> {
       padding: const EdgeInsets.all(6.0),
       child: TextFormField(
         validator: _validate,
+        keyboardType: TextInputType.multiline,
+        maxLines: widget.maxLines,
         controller: widget.textEditingController,
         decoration: InputDecoration(
             focusColor: widget.color,

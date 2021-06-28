@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 import 'package:tyme/UI/pages/OnBoardingScreen.dart';
@@ -15,10 +14,10 @@ import 'package:tyme/utils/local_notifications.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  isUserNew().then((value) => getCategories().then((v) {
-        runApp(ProviderScope(
-          child: MyApp(),
-        ));
+  isUserNew().then((value) => initStuff().then((v) {
+        runApp(
+          MyApp(),
+        );
 
         appNotifications.initPlugin();
       }));
@@ -31,16 +30,17 @@ Future<void> isUserNew() async {
   print(_isUserNew);
 }
 
-Future<void> getCategories() async {
+Future<void> initStuff() async {
   await db.initCategories();
+  await db.initQuotes();
 }
 
 AppDatabase db = AppDatabase();
 AppNotifications appNotifications = AppNotifications();
 
-class MyApp extends ConsumerWidget {
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context) {
     /*   db.insertUser(
         UsersCompanion(firstName: Value('SI'), lastName: Value('dss')));*/
     return MaterialApp(
