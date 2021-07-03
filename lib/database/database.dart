@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:tyme/utils/konstants.dart' as k;
@@ -8,8 +10,7 @@ class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   TextColumn get title => text().withLength(min: 1, max: 50)();
-  IntColumn get category =>
-      integer().nullable().customConstraint('NULL REFERENCES categories(id)')();
+  IntColumn get category => integer()();
   TextColumn get note => text()();
   BoolColumn get isDone => boolean().withDefault(Constant(false))();
   BoolColumn get isChallenge => boolean().withDefault(Constant(false))();
@@ -29,8 +30,7 @@ class Todos extends Table {
 
   TextColumn get content => text().withLength(min: 0, max: 50)();
   BoolColumn get isDone => boolean().withDefault(Constant(false))();
-  IntColumn get taskId =>
-      integer().customConstraint('NULL REFERENCES tasks(id)')();
+  IntColumn get taskId => integer()();
 }
 
 class Categories extends Table {
@@ -43,7 +43,7 @@ class Categories extends Table {
 class Quotes extends Table {
   IntColumn get id => integer().autoIncrement()();
   BoolColumn get isChecked => boolean().withDefault(Constant(true))();
-  TextColumn get content => text().withLength(min: 0, max: 50)();
+  TextColumn get content => text()();
   TextColumn get author => text().nullable()();
 }
 
@@ -70,17 +70,7 @@ class AppDatabase extends _$AppDatabase {
   // Bump this when changing tables and columns.
   // Migrations will be covered in the next part.
   @override
-  int get schemaVersion => 3;
-
-  @override
-  MigrationStrategy get migration => MigrationStrategy(
-        // Runs if the database has already been opened on the device with a lower version
-        onUpgrade: (migrator, from, to) async {
-          if (from == 2) {
-            await migrator.createTable(tasks);
-          }
-        },
-      );
+  int get schemaVersion => 1;
 
   /////////////TASKS//////////////
   Future<List<Task>> getAllTasks() => select(tasks).get();
@@ -124,7 +114,7 @@ class AppDatabase extends _$AppDatabase {
   ///////////CATEGORIS////////
   Future<void> insertCategories(CategoriesCompanion c) async {
     await into(categories).insert(c);
-    await initCategories();
+    await refreshCategories();
   }
 
   Future<List<Categorie>> getCategories() => select(categories).get();
@@ -141,22 +131,13 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> initQuotes() async {
-    await getQuotes().then((value) {
-      if (value.isEmpty) {
-        k.categories = k.premadeCategories;
-        k.categories
-            .forEach((element) => insertCategories(element.toCompanion(true)));
-      } else {
-        k.quotes = value;
-      }
+  Future<void> refreshCategories() async {
+    await getCategories().then((value) {
+      k.categories = value;
     });
   }
 
   Future<void> deleteCategory(Categorie c) async {
-    print(c);
-    print(await getAllTasks());
-
     await (delete(tasks)..where((tbl) => tbl.category.equals(c.id))).go();
     await delete(categories).delete(c);
     await getCategories().then((value) => value.isEmpty
@@ -209,12 +190,37 @@ class AppDatabase extends _$AppDatabase {
 //////QUOTES///////////////
   Stream<List<Quote>> watchQuotes() => select(quotes).watch();
   Future<List<Quote>> getQuotes() => select(quotes).get();
+  Quote getRandomQuote() {
+    return k.quotes[Random().nextInt(k.quotes.length)];
+  }
+
+  Future<void> initQuotes() async {
+    await getQuotes().then((value) {
+      if (value.isEmpty) {
+        k.quotes = k.premadeQuotes;
+        k.quotes.forEach((element) => insertQuote(element.toCompanion(true)));
+      } else {
+        k.quotes = value;
+      }
+    });
+  }
+
+  Future<Quote> getQuoteById(int id) =>
+      (select(quotes)..where((tbl) => tbl.id.equals(id))).getSingle();
+
   Future insertQuote(QuotesCompanion q) async {
     await into(quotes).insert(q);
-    await initQuotes();
+    await refreshQuotes();
+  }
+
+  Future<void> refreshQuotes() async {
+    await getQuotes().then((value) {
+      k.quotes = value;
+    });
   }
 
   Future updateQuote(QuotesCompanion q) => update(quotes).replace(q);
-  Future deleteQuote(QuotesCompanion q) => delete(quotes).delete(q);
+  Future deleteQuote(Quote q) => delete(quotes).delete(q);
+
 ///////////////////////
 }

@@ -537,7 +537,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
 class Task extends DataClass implements Insertable<Task> {
   final int id;
   final String title;
-  final int? category;
+  final int category;
   final String note;
   final bool isDone;
   final bool isChallenge;
@@ -548,7 +548,7 @@ class Task extends DataClass implements Insertable<Task> {
   Task(
       {required this.id,
       required this.title,
-      this.category,
+      required this.category,
       required this.note,
       required this.isDone,
       required this.isChallenge,
@@ -565,7 +565,7 @@ class Task extends DataClass implements Insertable<Task> {
       title: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}title'])!,
       category: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}category']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}category'])!,
       note: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}note'])!,
       isDone: const BoolType()
@@ -587,9 +587,7 @@ class Task extends DataClass implements Insertable<Task> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['title'] = Variable<String>(title);
-    if (!nullToAbsent || category != null) {
-      map['category'] = Variable<int?>(category);
-    }
+    map['category'] = Variable<int>(category);
     map['note'] = Variable<String>(note);
     map['is_done'] = Variable<bool>(isDone);
     map['is_challenge'] = Variable<bool>(isChallenge);
@@ -610,9 +608,7 @@ class Task extends DataClass implements Insertable<Task> {
     return TasksCompanion(
       id: Value(id),
       title: Value(title),
-      category: category == null && nullToAbsent
-          ? const Value.absent()
-          : Value(category),
+      category: Value(category),
       note: Value(note),
       isDone: Value(isDone),
       isChallenge: Value(isChallenge),
@@ -634,7 +630,7 @@ class Task extends DataClass implements Insertable<Task> {
     return Task(
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
-      category: serializer.fromJson<int?>(json['category']),
+      category: serializer.fromJson<int>(json['category']),
       note: serializer.fromJson<String>(json['note']),
       isDone: serializer.fromJson<bool>(json['isDone']),
       isChallenge: serializer.fromJson<bool>(json['isChallenge']),
@@ -650,7 +646,7 @@ class Task extends DataClass implements Insertable<Task> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
-      'category': serializer.toJson<int?>(category),
+      'category': serializer.toJson<int>(category),
       'note': serializer.toJson<String>(note),
       'isDone': serializer.toJson<bool>(isDone),
       'isChallenge': serializer.toJson<bool>(isChallenge),
@@ -739,7 +735,7 @@ class Task extends DataClass implements Insertable<Task> {
 class TasksCompanion extends UpdateCompanion<Task> {
   final Value<int> id;
   final Value<String> title;
-  final Value<int?> category;
+  final Value<int> category;
   final Value<String> note;
   final Value<bool> isDone;
   final Value<bool> isChallenge;
@@ -762,7 +758,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   TasksCompanion.insert({
     this.id = const Value.absent(),
     required String title,
-    this.category = const Value.absent(),
+    required int category,
     required String note,
     this.isDone = const Value.absent(),
     this.isChallenge = const Value.absent(),
@@ -771,12 +767,13 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required DateTime dueDate,
     this.reminderDate = const Value.absent(),
   })  : title = Value(title),
+        category = Value(category),
         note = Value(note),
         dueDate = Value(dueDate);
   static Insertable<Task> custom({
     Expression<int>? id,
     Expression<String>? title,
-    Expression<int?>? category,
+    Expression<int>? category,
     Expression<String>? note,
     Expression<bool>? isDone,
     Expression<bool>? isChallenge,
@@ -802,7 +799,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
   TasksCompanion copyWith(
       {Value<int>? id,
       Value<String>? title,
-      Value<int?>? category,
+      Value<int>? category,
       Value<String>? note,
       Value<bool>? isDone,
       Value<bool>? isChallenge,
@@ -834,7 +831,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       map['title'] = Variable<String>(title.value);
     }
     if (category.present) {
-      map['category'] = Variable<int?>(category.value);
+      map['category'] = Variable<int>(category.value);
     }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
@@ -902,8 +899,11 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   late final GeneratedIntColumn category = _constructCategory();
   GeneratedIntColumn _constructCategory() {
-    return GeneratedIntColumn('category', $tableName, true,
-        $customConstraints: 'NULL REFERENCES categories(id)');
+    return GeneratedIntColumn(
+      'category',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _noteMeta = const VerificationMeta('note');
@@ -1016,6 +1016,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     if (data.containsKey('category')) {
       context.handle(_categoryMeta,
           category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
     }
     if (data.containsKey('note')) {
       context.handle(
@@ -1273,8 +1275,11 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   @override
   late final GeneratedIntColumn taskId = _constructTaskId();
   GeneratedIntColumn _constructTaskId() {
-    return GeneratedIntColumn('task_id', $tableName, false,
-        $customConstraints: 'NULL REFERENCES tasks(id)');
+    return GeneratedIntColumn(
+      'task_id',
+      $tableName,
+      false,
+    );
   }
 
   @override
@@ -1775,8 +1780,11 @@ class $QuotesTable extends Quotes with TableInfo<$QuotesTable, Quote> {
   @override
   late final GeneratedTextColumn content = _constructContent();
   GeneratedTextColumn _constructContent() {
-    return GeneratedTextColumn('content', $tableName, false,
-        minTextLength: 0, maxTextLength: 50);
+    return GeneratedTextColumn(
+      'content',
+      $tableName,
+      false,
+    );
   }
 
   final VerificationMeta _authorMeta = const VerificationMeta('author');

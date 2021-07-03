@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tyme/UI/pages/HomePage.dart';
 import 'package:tyme/UI/pages/OnBoardingScreen.dart';
+import 'package:tyme/UI/pages/QuoteFrontPage.dart';
 
 import 'package:tyme/database/database.dart';
 import 'package:tyme/utils/AppLocalizations.dart';
@@ -57,9 +58,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          /* textTheme: GoogleFonts.rubikTextTheme(
-            Theme.of(context).textTheme,
-          ),*/
+          fontFamily: 'Rubik',
           primaryColor: MaterialColor(AppColors.trafficWhite.value, {
             100: AppColors.trafficWhite,
             50: AppColors.trafficWhite,
@@ -74,6 +73,7 @@ class MyApp extends StatelessWidget {
           }),
         ),
         home: SafeArea(
-            child: Material(child: _isUserNew ? OnBoardScreen() : HomePage())));
+            child: Material(
+                child: _isUserNew ? OnBoardScreen() : QuoteFrontPage())));
   }
 }

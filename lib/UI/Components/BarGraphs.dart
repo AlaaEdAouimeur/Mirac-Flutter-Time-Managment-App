@@ -85,7 +85,7 @@ class BarGraphsState extends State<BarGraphs> {
             stream: db.getPastTasks(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) return Text('No data');
-              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+              if (snapshot.hasData) {
                 pastTasks = snapshot.data ?? [];
                 return Column(
                   children: [

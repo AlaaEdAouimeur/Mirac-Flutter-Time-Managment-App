@@ -87,25 +87,25 @@ List<Quote> premadeQuotes = [
       content: 'Ready for a new life',
       author: 'Sylvia Plath'),
   Quote(
-      id: 0,
+      id: 1,
       isChecked: true,
       content:
           "Opportunity doesn't make appointments, you have to be ready when it arrives",
       author: 'Tim Fargo'),
   Quote(
-      id: 0,
+      id: 2,
       isChecked: true,
       content:
           'Always remember that negative feelings and undue grudges will swallow you up, so ',
       author: ' Dr Prem Jagyasi'),
   Quote(
-      id: 0,
+      id: 3,
       isChecked: true,
       content:
           'One must always keep the tools of statecraft sharp and ready. Power and fear – sharp and ready',
       author: ' Frank Herbert'),
   Quote(
-      id: 0,
+      id: 4,
       isChecked: true,
       content:
           'If you make peace without defense power,then you should be really ready to be ruled.',

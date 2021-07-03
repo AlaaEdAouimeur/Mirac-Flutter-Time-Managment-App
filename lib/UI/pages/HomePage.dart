@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             ),
             GButton(
               icon: Icons.calendar_today_rounded,
-              text: 'Tasks',
+              text: 'Calendar',
             ),
 
             GButton(

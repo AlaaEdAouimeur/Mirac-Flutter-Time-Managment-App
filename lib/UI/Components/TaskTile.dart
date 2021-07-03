@@ -27,7 +27,7 @@ class TaskTile extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            height: 100,
+            height: 70,
             child: Padding(
               padding: const EdgeInsets.all(6.0),
               child: Column(
@@ -41,13 +41,13 @@ class TaskTile extends StatelessWidget {
             ),
           ),
           Container(
-            height: 100,
+            height: 75,
             width: 5,
             color: Color(categorie.color),
           ),
           Container(
             color: Color(categorie.color).withOpacity(0.1),
-            height: 100,
+            height: 75,
             width: MediaQuery.of(context).size.width * 3 / 4,
             child: Column(
               children: [
@@ -58,17 +58,10 @@ class TaskTile extends StatelessWidget {
                   task.title,
                   style: TextStyle(fontSize: 20),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  task.note,
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-                ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Icon(
                         IconData(categorie.iconData,
@@ -78,12 +71,14 @@ class TaskTile extends StatelessWidget {
                       SizedBox(
                         width: 8,
                       ),
-                      Text(
-                        categorie.content,
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
-                      ),
-                      Expanded(child: Container()),
+                      task.isDone
+                          ? Icon(
+                              Icons.check_circle,
+                              color: Color(categorie.color),
+                              //  size: 30,
+                            )
+                          : SizedBox()
+                      // Expanded(child: Container()),
                       /*  task.todosCount != 0
                           ? Text(task.doneTodosCount.toString() +
                               "/" +
